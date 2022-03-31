@@ -1,0 +1,17 @@
+<svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M21 6H19V3H16V1H21V6Z" fill="#DAD8D8"/>
+<path d="M21 21V16H19V19H16V21H21Z" fill="#DAD8D8"/>
+<path d="M1 21H6V19H3V16H1V21Z" fill="#DAD8D8"/>
+<path d="M1 1V6H3V3H6V1H1Z" fill="#DAD8D8"/>
+<path d="M13.5 12H12V13.5H13.5V12Z" fill="#DAD8D8"/>
+<path d="M15 13.5H13.5V15H15V13.5Z" fill="#DAD8D8"/>
+<path d="M16.5 12H15V13.5H16.5V12Z" fill="#DAD8D8"/>
+<path d="M13.5 15H12V16.5H13.5V15Z" fill="#DAD8D8"/>
+<path d="M15 16.5H13.5V18H15V16.5Z" fill="#DAD8D8"/>
+<path d="M16.5 15H15V16.5H16.5V15Z" fill="#DAD8D8"/>
+<path d="M18 13.5H16.5V15H18V13.5Z" fill="#DAD8D8"/>
+<path d="M18 16.5H16.5V18H18V16.5Z" fill="#DAD8D8"/>
+<rect x="4" y="4" width="6" height="6" rx="1" fill="#30384C"/>
+<rect x="12" y="4" width="6" height="6" rx="1" fill="#30384C"/>
+<rect x="4" y="12" width="6" height="6" rx="1" fill="#30384C"/>
+</svg>

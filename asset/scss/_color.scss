@@ -1,0 +1,31 @@
+:root {
+  /* ------ Primary Color ---- */
+  --red: #d41535;
+  --red-500: #da3731;
+  --red-400: #e77f7b;
+  --red-300: #ee9d9b;
+  --red-200: #f5ccca;
+  --red-100: #f9dfde;
+  --red-50: #fff1f0;
+  /* ------ Secondary Color ---- */
+  --gray-500: #a7aab2;
+  --gray-400: #c6c9cd;
+  --gray-300: #dfe0e3;
+  --gray-200: #f1f1f3;
+  --gray-100: #f8f8f9;
+  --gray-50: #fdffff;
+  /* ------ typography Color ---- */
+  --black-500: #0e1118;
+  --black-400: #2e3138;
+  --black-300: #4c4f56;
+  --black-200: #5f6269;
+  --black-100: #868991;
+  --black-50: #a7aab2;
+  --pure_white: #fff;
+  --bg-over: rgba($color: #000000, $alpha: 1);
+  body {
+    background-color: var(--pure_white);
+  }
+
+  --success: #2fa56a;
+}
