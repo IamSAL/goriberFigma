@@ -5,6 +5,9 @@ import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import Canvas from "./../components/Canvas";
 import Controls from "./../components/Controls";
+import Canvasp5 from "../components/Canvasp5";
+import CanvasFabric from "./../components/CanvasFabric";
+import FabricEditor from "../components/FabricEditor";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -45,7 +48,7 @@ const index = () => {
               },
             }}
           >
-            <Canvas />
+            <FabricEditor />
           </Paper>
         </Grid>
       </Grid>

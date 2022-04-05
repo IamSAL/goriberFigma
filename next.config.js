@@ -1,6 +1,4 @@
-const withPWA = require("next-pwa");
-const runtimeCaching = require("next-pwa/cache");
-const nextConfig = withPWA({
+const nextConfig = {
   reactStrictMode: true,
   env: {
     SERVER_ROOT: process.env.SERVER_ROOT,
@@ -18,10 +16,6 @@ const nextConfig = withPWA({
     locales: ["en", "bn"],
     defaultLocale: "en",
   },
-  pwa: {
-    dest: "public",
-    // swSrc: "/service-worker.js",
-  },
-});
+};
 
 module.exports = nextConfig;
