@@ -31,7 +31,7 @@ const Toolbar = () => {
   };
 
   return (
-    <div className="controls">
+    <div className="tool-bar">
       <Tabs
         value={value}
         onChange={handleChange}
@@ -45,12 +45,14 @@ const Toolbar = () => {
         <Tab label="Settings" {...a11yProps(2)} disabled />
         <Tab label="Export" {...a11yProps(2)} disabled />
       </Tabs>
-      {value == 0 && <Layers EditorState={EditorState} />}
-      {value == 1 && (
-        <div className="p-4">
-          <ShapePicker />
-        </div>
-      )}
+      <div className="tool-bar-content">
+        {value == 0 && <Layers EditorState={EditorState} />}
+        {value == 1 && (
+          <div className="p-4">
+            <ShapePicker />
+          </div>
+        )}
+      </div>
     </div>
   );
 };

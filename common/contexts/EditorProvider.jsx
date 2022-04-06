@@ -17,12 +17,23 @@ export const defaultEditorState = {
     activeObject: null,
     selectedObjects: [],
     allObjects: [],
+    drawingMode: {
+      status: false,
+      tool: "",
+      config: {
+        strokeWidth: 1,
+        strokeColor: "#000",
+        radius: 0,
+      },
+    },
   },
   canvas: null,
 };
 
 export const EditorProvider = ({ children }) => {
   const [EditorState, setEditorState] = useState(defaultEditorState);
+
+
 
   useEffect(() => {
     if (localStorage.getItem(`editorData`)) {
@@ -47,6 +58,11 @@ export const useEditorData = () => {
   const [EditorState, setEditorState] = useContext(EditorContext);
   return EditorState;
 };
+
+export const useEditor=()=>{
+  const [EditorState, setEditorState] = useContext(EditorContext);
+  return EditorState.editor;
+}
 
 export const useEditorStateModifier = () => {
   const [EditorState, setEditorState] = useContext(EditorContext);
@@ -87,11 +103,15 @@ export const useEditorStateModifier = () => {
         editor: { ...prev.editor, activeObject: object },
       };
     });
-    canvas.renderAll();
+
+    canvas?.renderAll();
   };
 
   const setSelectedObjects = (objects) => {
     setEditorState((prev) => {
+      if (objects.length == 1) {
+        canvas?.setActiveObject(objects[0] || null);
+      }
       return {
         ...prev,
         editor: {
@@ -102,6 +122,35 @@ export const useEditorStateModifier = () => {
       };
     });
   };
+  const setDrawingMode = (drawingOptions) => {
+    setEditorState((prev) => {
+      canvas?.isDrawingMode = drawingOptions.status
+      if(drawingOptions.tool=="move"){
+        canvas?.selection=true
+      }else{
+        canvas?.selection=false
+      }
+      return {
+        ...prev,
+        editor: {
+          ...prev.editor,
+          drawingMode: { ...prev.editor.drawingMode, ...drawingOptions },
+        },
+      };
+    });
+ 
+  };
+
+  const getDrawingMode = (drawingOptions) => {
+   
+    const {
+      canvas,
+      editor: { drawingMode },
+    } = EditorState;
+
+    return drawingMode;
+ 
+  };
 
   const getActiveObject = (options) => {
     return EditorState.editor.activeObject;
@@ -109,7 +158,12 @@ export const useEditorStateModifier = () => {
 
   const removeObject = (object) => {
     canvas?.remove(object);
-    return EditorState.editor.activeObject;
+  
+  };
+
+  const renameObject = (object,newName) => {
+    object.set({name:newName})
+    setActiveObject(object);
   };
 
   const clearActiveObject = () => {
@@ -141,8 +195,11 @@ export const useEditorStateModifier = () => {
     setActiveObject,
     getActiveObject,
     removeObject,
+    renameObject,
     clearActiveObject,
     setSelectedObjects,
     refreshEditorUI,
+    setDrawingMode,
+    getDrawingMode
   };
 };

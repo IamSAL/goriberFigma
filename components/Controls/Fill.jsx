@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
-import { ColorPicker, ColorBox, ColorInput, ColorPalette } from "mui-color";
+import {
+  ColorPicker,
+  ColorBox,
+  ColorInput,
+  ColorPalette,
+  ColorButton,
+} from "mui-color";
 
 function valuetext(value) {
   return `${value}%`;
@@ -42,7 +48,7 @@ export default function Fill({ EditorState }) {
   }, [value, canvas, activeObject]);
 
   const onChange = (e) => {
-    if (e) {
+    if (e.rgb) {
       setvalue(`rgb(${e.rgb.join(",")})`);
     }
   };
@@ -61,10 +67,21 @@ export default function Fill({ EditorState }) {
         //   color="secondary"
         //   onChange={onChange}
         // />
-        <>
-          <ColorPicker defaultValue={value} value={value} onChange={onChange} />
-          <ColorPalette palette={palette} />
-        </>
+        <div className="control fill">
+          <div className="current-color">
+            <ColorPicker
+              value={value}
+              onChange={onChange}
+              disableTextfield={true}
+            />
+          </div>
+          <ColorPalette
+            palette={palette}
+            onSelect={(color) => {
+              setvalue(palette[color]);
+            }}
+          />
+        </div>
       ) : (
         <p className="text-center text-muted">No object selected</p>
       )}

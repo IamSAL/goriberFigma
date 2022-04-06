@@ -47,5 +47,31 @@ p {
 
 
 body{
+  max-height:100vh;
   overflow:hidden;
+}
+
+
+.current-color {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #f1f1f1;
+  border-radius: 10px;
+[role="button"]{
+  display: flex;justify-content: space-between;align-items: center;
+}
+}
+
+.controls{
+  overflow-y: scroll;
+  padding-bottom: 200px;
+  
+}
+.tool-bar-content{
+  padding: 0px 15px;
+}
+*{
+  font-size: small;
 }

@@ -11,13 +11,14 @@ import ActiveObject from "./Controls/ActiveObject";
 import { useEditorData } from "./../common/contexts/EditorProvider";
 import Layers from "./Controls/Layers";
 import Fill from "./Controls/Fill";
+import Export from "./Controls/Export";
 
 const Controls = () => {
   const EditorState = useEditorData();
 
   return (
     <div className="controls">
-      <Accordion>
+      <Accordion defaultExpanded={true}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel3a-content"
@@ -41,7 +42,7 @@ const Controls = () => {
           <Scale EditorState={EditorState} />
         </AccordionDetails>
       </Accordion>
-      <Accordion>
+      <Accordion defaultExpanded={true}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel2a-content"
@@ -51,6 +52,19 @@ const Controls = () => {
         </AccordionSummary>
         <AccordionDetails>
           <Fill EditorState={EditorState} />
+        </AccordionDetails>
+      </Accordion>
+
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel5a-content"
+          id="panel5a-header"
+        >
+          <Typography>Export</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Export EditorState={EditorState} />
         </AccordionDetails>
       </Accordion>
     </div>
