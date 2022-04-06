@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import { createContext, useState, useEffect, useContext } from "react";
 import { checkPlatformWebAuthnSupport } from "../helpers";
-import { useAuth } from "./AuthProvider";
 
 export const UiContext = createContext();
 export const defaultUiState = {
@@ -71,7 +70,7 @@ export const IsWebAuthnSupported = () => {
 };
 export const useUiStateModifier = () => {
   const [UiState, setUiState] = useContext(UiContext);
-  const [AuthInfo, setAuthInfo] = useAuth();
+
   const setFullScreenMenuOpen = (show) => {
     setUiState((prev) => {
       return { ...prev, fullScreenMenuOpen: show };

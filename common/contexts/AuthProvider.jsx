@@ -10,7 +10,7 @@ import {
 } from "../helpers";
 import Base64 from "crypto-js/enc-base64";
 import Utf8 from "crypto-js/enc-utf8";
-import Loading from "./../../components/Loading";
+
 import { postRequestAuthed } from "../API";
 import { variables } from "./../variables";
 import { getRequestAuthed } from "./../API";
@@ -72,13 +72,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={[AuthInfo, setAuthInfo]}>
-      {isLoading ? (
-        <div style={{ height: "100vh" }} className="center-icon">
-          <Loading />
-        </div>
-      ) : (
-        children
-      )}
+      {children}
     </AuthContext.Provider>
   );
 };

@@ -1,31 +1,100 @@
 import React, { useState, useEffect } from "react";
 import { CanvasFabric } from "./CanvasFabric";
 import { fabric } from "fabric";
+import {
+  useEditorState,
+  useEditorStateModifier,
+} from "./../common/contexts/EditorProvider";
+import { getSvgParts } from "./../common/getSvgParts";
+import { nanoid } from "nanoid";
+
 const FabricEditor = () => {
-  const [canvas, setcanvas] = useState(null);
+  const [EditorState, setEditorState] = useEditorState();
+  const [contextMenuStatus, setcontextMenuStatus] = useState(false);
+  const { canvas } = EditorState;
+  const {
+    setCanvas,
+    setActiveObject,
+    clearActiveObject,
+    setSelectedObjects,
+    refreshEditorUI,
+  } = useEditorStateModifier();
+
+  const onObjectMove = (e) => {
+    console.log("move", e);
+  };
+  const onObjectAdded = ({ target }) => {
+    console.log("added", target);
+    target.set({ scaleY: 1, scaleX: 1, obId: nanoid(10) });
+
+    refreshEditorUI();
+  };
+  const onObjectRemoved = ({ target }) => {
+    console.log("removed", target);
+    refreshEditorUI();
+  };
+
+  const onSelectedCreated = ({ e, selected }) => {
+    console.log("selection", e);
+
+    setSelectedObjects(selected);
+  };
+  const onSelectedCleared = ({ e, selected }) => {
+    console.log("selection cleared", e);
+    clearActiveObject();
+    setSelectedObjects([]);
+  };
+  const onCanvasRenderUpdate = (e) => {};
+  const onObjectModified = (e) => {
+    console.log("modified", e);
+  };
   useEffect(() => {
     if (canvas) {
-      var path = new fabric.Path(
-        `<svg width="100px" height="100px" viewBox="0 0 100 100" id="Слой_1" style="enable-background:new 0 0 100 100;" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M93.01,68.099c-1.2,2.48-6.74,11.12-27.72,18.16c-17.5,5.87-32.78,4.79-38.53,4.39c-0.6-0.04-1.11-0.08-1.52-0.1  c-1.58-0.08-15.87-4.89-18.1-10.06c-0.45-1.04,0.06-4.46,1.18-9.27c3.2,2.03,14.54,7.1,19.07,7.37c0.61,0.04,1.42,0.06,2.38,0.06  c6.92,0,22.02-1.06,32.95-4.4c12.26-3.75,19.86-7.53,26.2-13.05C91.56,64.839,93.12,67.379,93.01,68.099z"/><path d="M88.33,60.389c-6.23,5.45-13.75,9.19-25.9,12.91c-12.33,3.77-30.01,4.6-34.98,4.29c-4.46-0.27-16.32-5.64-18.88-7.42  c0.3-1.24,0.63-2.55,1-3.94c2.62,1.75,13.22,5.49,17.99,5.78c0.82,0.05,2.29,0.1,4.22,0.1c7.18,0,20.73-0.61,30.94-3.72  c12.37-3.79,18.35-7.14,23.39-10.96C86.9,58.469,87.65,59.459,88.33,60.389z"/><path d="M16.9,53.899c-1.66,1.08-3.38,0.31-3.85,0.06c1.1-3.69,2.29-7.5,3.49-11.25c0.04,0.21,0.08,0.42,0.12,0.64  C17.28,46.679,18.44,52.899,16.9,53.899z"/><path d="M41.28,9.519c-0.94-0.34-2.2-0.52-3.59-0.52c-3.77,0-8.5,1.27-10.24,3.79c-1.35,1.96-5.86,14.37-10.3,28.06  c0.07,0.07,0.11,0.16,0.13,0.26c0.09,0.54,0.22,1.25,0.37,2.06c1,5.37,1.73,10.3-0.21,11.57c-0.83,0.54-1.67,0.72-2.42,0.72  c-0.98,0-1.81-0.31-2.26-0.53h-0.01c-1.08,3.63-2.07,7.12-2.92,10.3c0.05,0.02,0.1,0.04,0.15,0.08c2.14,1.58,12.99,5.42,17.64,5.71  c3.81,0.23,21.99,0.32,34.81-3.59c12.21-3.74,18.11-7.03,23.06-10.8C72.8,40.199,47.88,11.979,41.28,9.519z M30.48,33.619  c-0.65,0.61-1.41,0.92-2.23,0.92c-0.56,0-1.14-0.15-1.74-0.44c-0.95-0.45-1.98-1.54-1.53-4.11c0.64-3.65,4.31-9.14,5.81-9.3  c0.35-0.04,0.65,0.15,0.78,0.48c0.72,1.8,1.07,3.82,1.07,5.73C32.64,29.719,31.89,32.319,30.48,33.619z M57.45,44.629  c-0.15,1.23-0.96,2.85-3.91,3.57c-0.37,0.09-0.74,0.14-1.09,0.14c-1.4,0-2.56-0.74-3.38-2.18c-1.88-3.29-1.59-9.98-0.31-11.29  c0.3-0.31,0.69-0.39,1.04-0.2c3.89,2.08,7.68,6.08,7.68,9.43C57.48,44.279,57.47,44.449,57.45,44.629z"/><path d="M29.8,32.889c-0.79,0.74-1.75,0.85-2.86,0.31c-0.86-0.41-1.19-1.29-1.03-2.67c0.42-3.5,3.76-8.1,4.82-8.77  C32.24,25.769,31.81,31.019,29.8,32.889z"/><path d="M56.46,44.499c-0.17,1.34-1.23,2.26-3.15,2.73c-1.63,0.39-2.82-0.28-3.63-2.08c-1.56-3.42-0.88-8.79-0.25-9.54  C53.65,37.889,56.79,41.869,56.46,44.499z"/></svg>`
-      );
+      canvas.on("object:moving", onObjectMove);
+      canvas.on("object:added", onObjectAdded);
+      canvas.on("object:modified", onObjectModified);
+      canvas.on("object:removed", onObjectRemoved);
+      canvas.on("selection:created", onSelectedCreated);
+      canvas.on("selection:updated", onSelectedCreated);
+      canvas.on("selection:cleared", onSelectedCleared);
+      canvas.on("after:render", onCanvasRenderUpdate);
+      // canvas.on("object:modified", onCanvasRenderUpdate);
 
-      canvas.add(
-        path.set({
-          left: 100,
-          top: 100,
-          angle: 120,
-          selectable: true,
-          hasControls: false,
-          hasBorders: false,
-        })
-      );
-      console.log(canvas.toObject());
+      var center = new fabric.Path(getSvgParts("center"));
+      var rect = new fabric.Rect({
+        left: 100,
+        top: 100,
+        fill: "red",
+        width: 20,
+        height: 20,
+        name: "rect",
+      });
+
+      center.set({
+        left: canvas.width / 2 - center.width,
+        top: canvas.height / 2 - center.height,
+        fill: "orange",
+        name: "center",
+      });
+      window.center = center;
+      window.canvas = canvas;
+      // const group = new fabric.Group([center]);
+      canvas.add(rect);
+      canvas.add(center);
+      canvas.renderAll();
     }
-
+    console.log("canvas changed");
     return () => {};
   }, [canvas]);
 
-  return <CanvasFabric setCanvas={setcanvas} />;
+  return (
+    <CanvasFabric
+      onContextMenu={(e) => {
+        e.preventDefault();
+        setcontextMenuStatus(true);
+      }}
+    />
+  );
 };
 
 export default FabricEditor;
