@@ -12,6 +12,7 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import EditorTools from "./EditorTools.jsx";
+import OptionTools from "./OptionTools";
 
 const pages = [];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
@@ -105,7 +106,9 @@ const AppHeader = () => {
               </Button>
             ))}
           </Box>
-
+          <Box sx={{ flexGrow: 0 }}>
+            <OptionTools />
+          </Box>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>

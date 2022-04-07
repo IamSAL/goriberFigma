@@ -12,6 +12,7 @@ import TextFieldsOutlinedIcon from "@mui/icons-material/TextFieldsOutlined";
 import CheckBoxOutlineBlankOutlinedIcon from "@mui/icons-material/CheckBoxOutlineBlankOutlined";
 import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined";
 import PanToolOutlinedIcon from "@mui/icons-material/PanToolOutlined";
+import { FiMove } from "react-icons/fi";
 import {
   useEditorState,
   useEditorStateModifier,
@@ -35,13 +36,29 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
 }));
 
 export default function EditorTools() {
-  const { setDrawingMode } = useEditorStateModifier();
-  const [elementTool, setElementTool] = React.useState(() => [""]);
+  const { setDrawingMode, addCircle, addRect, addText } =
+    useEditorStateModifier();
+  const [EditorState, setEditorState] = useEditorState();
+  const [elementTool, setElementTool] = React.useState("");
+  const { canvas, editor } = EditorState;
 
   useEffect(() => {
     if (["pencil", "brush"].includes(elementTool)) {
       setDrawingMode({ status: true, tool: elementTool });
     } else if (["rect", "circle", "text"].includes(elementTool)) {
+      switch (elementTool) {
+        case "rect":
+          addRect();
+          break;
+        case "circle":
+          addCircle();
+          break;
+        case "text":
+          addText();
+          break;
+        default:
+          break;
+      }
       setDrawingMode({ status: false, tool: elementTool });
     } else if (["move"].includes(elementTool)) {
       setDrawingMode({ status: false, tool: elementTool });
@@ -52,8 +69,15 @@ export default function EditorTools() {
     return () => {};
   }, [elementTool]);
 
+  useEffect(() => {
+    if (editor.panMode) {
+      setElementTool("");
+    }
+    return () => {};
+  }, [editor]);
+
   const handleElementTool = (event, newTool) => {
-    setElementTool(newTool || "move");
+    setElementTool(newTool || "");
   };
 
   return (

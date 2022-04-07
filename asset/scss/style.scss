@@ -75,3 +75,8 @@ body{
 *{
   font-size: small;
 }
+
+button[disabled] {
+  opacity: 0.2;
+  pointer-events: none;
+}

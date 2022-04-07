@@ -11,15 +11,17 @@ import { Box } from "@mui/system";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { TextField } from "@mui/material";
+import { fabric } from "fabric";
 
-async function downloadImage(imageSrc) {
+async function downloadImage(imageSrc, name) {
   const image = await fetch(imageSrc);
   const imageBlog = await image.blob();
   const imageURL = URL.createObjectURL(imageBlog);
 
   const link = document.createElement("a");
   link.href = imageURL;
-  link.download = `output-${new Date().getMilliseconds()}`;
+  // link.download = `output-${new Date().getMilliseconds()}`;
+  link.download = name || `output-${new Date().getMilliseconds()}`;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
@@ -33,13 +35,24 @@ export default function ExportOptions({ EditorState }) {
     canvas,
   } = EditorState;
 
-  function saveImage(e) {
-    let href = canvas?.toDataURL({
-      format: "png",
-      quality: 0.8,
-    });
+  function saveImage({ name, scale, format }) {
+    let objectsTOExport = canvas?.getActiveObjects();
 
-    downloadImage(href);
+    let data = "";
+
+    if (objectsTOExport.length > 0) {
+      data = new fabric.Group(canvas?.getActiveObjects()).toDataURL({
+        format: "png",
+        quality: 0.8,
+      });
+    } else {
+      data = canvas?.toDataURL({
+        format: "png",
+        quality: 0.8,
+      });
+    }
+
+    downloadImage(data, name + "-" + scale + "x");
   }
 
   return (
@@ -52,11 +65,11 @@ export default function ExportOptions({ EditorState }) {
         }}
         validationSchema={Yup.object({
           scale: Yup.string().required("Required"),
-          name: Yup.string().required("Required"),
+          name: Yup.string(),
           format: Yup.string().required("Required"),
         })}
         onSubmit={(values, { setSubmitting }) => {
-          saveImage();
+          saveImage(values);
         }}
       >
         {({
@@ -135,7 +148,7 @@ export default function ExportOptions({ EditorState }) {
                 width: "100%",
               }}
             >
-              Export {activeObject?.name || "Item"}
+              Export {activeObject?.name || "canvas"}
             </Button>
           </Form>
         )}

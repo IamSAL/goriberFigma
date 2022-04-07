@@ -4,7 +4,7 @@ import { fabric } from "fabric";
 import {
   useEditorState,
   useEditorStateModifier,
-  useEditor,
+
 } from "./../common/contexts/EditorProvider";
 import { getSvgParts } from "./../common/getSvgParts";
 import { nanoid } from "nanoid";
@@ -13,21 +13,18 @@ let circle, rect, isDown, origX, origY;
 const FabricEditor = () => {
   const [EditorState, setEditorState] = useEditorState();
   const [contextMenuStatus, setcontextMenuStatus] = useState(false);
-  const [drawingMode, setdrawingMode] = useState(false);
-  const { canvas } = EditorState;
-  const editor = useEditor();
+  const { canvas,editor } = EditorState;
+
   const {
     setCanvas,
     setActiveObject,
     clearActiveObject,
     setSelectedObjects,
-    refreshEditorUI,
+    updateCanvasState,
+    deleteImage
   } = useEditorStateModifier();
 
-  useEffect(() => {
-    setdrawingMode(editor.drawingMode);
-    return () => {};
-  }, [editor]);
+;
 
   const onObjectMove = (e) => {
     console.log("move", e);
@@ -37,20 +34,19 @@ const FabricEditor = () => {
     target.set({
       scaleY: target.scaleY || 1,
       scaleX: target.scaleX || 1,
-
+      name:target.name||editor.drawingMode.tool||"untitled",
       obId: nanoid(10),
     });
-
-    refreshEditorUI();
+    updateCanvasState();
+  
   };
   const onObjectRemoved = ({ target }) => {
     console.log("removed", target);
-    refreshEditorUI();
+    updateCanvasState();
   };
 
   const onSelectedCreated = ({ e, selected }) => {
     console.log("selection", e);
-
     setSelectedObjects(selected);
   };
   const onSelectedCleared = ({ e, selected }) => {
@@ -61,6 +57,7 @@ const FabricEditor = () => {
 
   const onObjectModified = (e) => {
     console.log("modified", e);
+    updateCanvasState();
   };
 
   const onCanvasMouseDown = (o, editor, canvas) => {
@@ -126,19 +123,11 @@ const FabricEditor = () => {
       canvas.on("selection:updated", onSelectedCreated);
       canvas.on("selection:cleared", onSelectedCleared);
 
-      var center = new fabric.Path(getSvgParts("center"));
-      var rect = new fabric.Rect({
-        left: 100,
-        top: 100,
-        fill: "purple",
-        width: 20,
-        height: 20,
-        name: "rect",
-      });
-
-      center.set({
-        left: canvas.width / 2 - center.width,
-        top: canvas.height / 2 - center.height,
+      var reactAtom = new fabric.Path(getSvgParts("center"));
+     
+      reactAtom.set({
+        left: canvas.width / 2 - reactAtom.width,
+        top: canvas.height / 2 - reactAtom.height,
         originX: "center",
         originY: "center",
         fill: "#2b2b2b",
@@ -146,16 +135,26 @@ const FabricEditor = () => {
         scaleY: 5,
         scaleX: 5,
       });
-      window.center = center;
+      window.center = reactAtom;
       window.canvas = canvas;
-      // const group = new fabric.Group([center]);
-      canvas.add(rect);
-      canvas.add(center);
+
+  ;
+      canvas.add(reactAtom);
       canvas.renderAll();
+
+      document.body.onkeydown = function (e) {
+        switch (e.keyCode) {
+          case 46: // delete
+            deleteImage();
+            break;
+        }
+      };
+
     }
     console.log("canvas changed");
     return () => {
       canvas?.__eventListeners = {};
+
     };
   }, [canvas]);
 

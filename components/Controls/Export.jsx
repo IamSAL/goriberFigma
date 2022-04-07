@@ -11,13 +11,12 @@ export default function Export({ EditorState }) {
 
   return (
     <Box sx={{ width: "100%" }}>
-      {activeObject ? (
+      {allObjects.length > 0 ? (
         <>
-         
           <ExportOptions EditorState={EditorState} />
         </>
       ) : (
-        <p className="text-center text-muted">No object selected</p>
+        <p className="text-center text-muted">Empty canvas</p>
       )}
     </Box>
   );

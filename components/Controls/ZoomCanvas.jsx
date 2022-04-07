@@ -1,43 +1,45 @@
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
+import { useEditorState } from "../../common/contexts/EditorProvider";
 
 function valuetext(value) {
   return `${value}%`;
 }
 
-export default function Scale({ EditorState }) {
+export default function ZoomCanvas({ onChange: onParentChange, zoomvalue }) {
+  const [EditorState, setEditorState] = useEditorState();
   const {
     editor: { activeObject, allObjects },
     canvas,
   } = EditorState;
-  const [value, setvalue] = useState(10);
 
   useEffect(() => {
-    setvalue(activeObject?.scaleY * 100 || 100);
+    onParentChange(canvas?.getZoom() * 100 || 100);
     return () => {};
-  }, [activeObject]);
+  }, [canvas]);
 
   useEffect(() => {
-    const val = value / 100;
-    activeObject?.set({ scaleY: val, scaleX: val });
-    canvas?.renderAll();
+    const val = zoomvalue / 100;
+    canvas?.setZoom(val);
+
     return () => {};
-  }, [value, canvas, activeObject]);
+  }, [zoomvalue, canvas]);
 
   const onChange = (e) => {
     if (e.target.value) {
-      setvalue(e.target.value);
+      onParentChange(e.target.value);
     }
   };
+
   return (
-    <Box sx={{ width: "100%" }}>
-      {activeObject ? (
+    <Box sx={{ width: "100%", marginTop: "30px" }}>
+      {canvas ? (
         <Slider
-          aria-label="Temperature"
-          value={value}
+          aria-label="Zoom"
+          value={zoomvalue}
           min={1}
-          max={800}
+          max={500}
           getAriaValueText={valuetext}
           valueLabelFormat={(val) => val + "%"}
           valueLabelDisplay="on"
@@ -45,7 +47,7 @@ export default function Scale({ EditorState }) {
           onChange={onChange}
         />
       ) : (
-        <p className="text-center text-muted">No object selected</p>
+        <p className="text-center text-muted">canvas is not ready yet.</p>
       )}
     </Box>
   );

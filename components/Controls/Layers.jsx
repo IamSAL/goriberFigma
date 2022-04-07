@@ -6,7 +6,7 @@ import LayerItem from "./LayerItem.jsx";
 import { useEditorStateModifier } from "../../common/contexts/EditorProvider";
 export default function Layers({ EditorState }) {
   const {
-    editor: { activeObject, selectedObjects, allObjects },
+    editor: { activeObject, selectedObjects, allObjects, drawingMode },
     canvas,
   } = EditorState;
 
@@ -60,6 +60,7 @@ export default function Layers({ EditorState }) {
               renameObject={renameObject}
               handleListItemClick={handleListItemClick}
               isSelected={isSelected}
+              drawingMode={drawingMode}
             />
           );
         })}

@@ -30,7 +30,7 @@ const Controls = () => {
           <ActiveObject EditorState={EditorState} />
         </AccordionDetails>
       </Accordion>
-      <Accordion>
+      <Accordion defaultExpanded={true}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel3a-content"
@@ -55,7 +55,7 @@ const Controls = () => {
         </AccordionDetails>
       </Accordion>
 
-      <Accordion>
+      <Accordion defaultExpanded={true}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel5a-content"

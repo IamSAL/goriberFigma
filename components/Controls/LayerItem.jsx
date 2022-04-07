@@ -12,6 +12,7 @@ const LayerItem = ({
   removeObject,
   isSelected,
   renameObject,
+  drawingMode,
 }) => {
   const [isEditing, setisEditing] = useState(false);
 
