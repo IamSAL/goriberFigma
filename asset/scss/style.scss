@@ -80,3 +80,10 @@ button[disabled] {
   opacity: 0.2;
   pointer-events: none;
 }
+
+
+.history-preview {max-height: 175px;overflow: hidden;width: 258px;border: 1px solid #d1cece;z-index: 2;position: fixed;bottom: 20px;
+
+  img {width: 100%;height: auto;}
+}
+

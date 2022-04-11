@@ -7,7 +7,8 @@ import {
 } from "react";
 import { useAuth } from "./AuthProvider";
 import { fabric } from "fabric";
-import { getRandBetween, randomColor } from './../helpers';
+import { getRandBetween, randomColor } from "./../helpers";
+import { nanoid } from "nanoid";
 
 export const EditorContext = createContext();
 export const defaultEditorState = {
@@ -28,15 +29,9 @@ export const defaultEditorState = {
         radius: 0,
       },
     },
-    panMode:false,
-    canvasState: [],
-    currentStateIndex: -1,
-    undoStatus: false,
-    redoStatus: false,
-    undoFinishedStatus: 1,
-    redoFinishedStatus: 1,
-    undoButton: null,
-    redoButton: null,
+    historyRedo: [],
+    historyUndo: [],
+    panMode: false,
   },
   canvas: null,
 };
@@ -143,7 +138,7 @@ export const useEditorStateModifier = () => {
           editor: {
             ...prev.editor,
             drawingMode: { ...prev.editor.drawingMode, ...drawingOptions },
-            panMode:drawingOptions.tool?false:prev.editor.panMode
+            panMode: drawingOptions.tool ? false : prev.editor.panMode,
           },
         };
       });
@@ -185,28 +180,6 @@ export const useEditorStateModifier = () => {
     setEditorState((prev) => {
       let editor = { ...prev.editor };
       const allNewObjects = canvas?.getObjects();
-      if (editor.undoStatus == false && editor.redoStatus == false) {
-        var jsonData = canvas.toJSON();
-        var canvasAsJson = JSON.stringify(jsonData);
-        if (editor.currentStateIndex < editor.canvasState.length - 1) {
-          var indexToBeInserted = editor.currentStateIndex + 1;
-          editor.canvasState[indexToBeInserted] = canvasAsJson;
-          var numberOfElementsToRetain = indexToBeInserted + 1;
-          editor.canvasState = editor.canvasState.splice(
-            0,
-            numberOfElementsToRetain
-          );
-        } else {
-          editor.canvasState.push(canvasAsJson);
-        }
-        editor.currentStateIndex = editor.canvasState.length - 1;
-        if (
-          editor.currentStateIndex == editor.canvasState.length - 1 &&
-          editor.currentStateIndex != -1
-        ) {
-          editor.redoButton?.disabled = "disabled";
-        }
-      }
 
       return {
         ...prev,
@@ -216,115 +189,23 @@ export const useEditorStateModifier = () => {
   };
 
   const undo = function () {
-    console.log("undo called")
-    setEditorState((prev) => {
-      let editor = { ...prev.editor };
-      if (editor.undoFinishedStatus) {
-        if (editor.currentStateIndex == -1) {
-          editor.undoStatus = false;
-        } else {
-          if (editor.canvasState.length >= 1) {
-            editor.undoFinishedStatus = 0;
-            if (editor.currentStateIndex != 0) {
-              editor.undoStatus = true;
-              canvas.loadFromJSON(
-                editor.canvasState[editor.currentStateIndex - 1],
-                function () {
-                  var jsonData = JSON.parse(
-                    editor.canvasState[editor.currentStateIndex - 1]
-                  );
-                  canvas.renderAll();
-                  editor.undoStatus = false;
-                  editor.currentStateIndex -= 1;
-                  editor.undoButton?.removeAttribute("disabled");
-                  if (
-                    editor.currentStateIndex !==
-                    editor.canvasState.length - 1
-                  ) {
-                    editor.redoButton?.removeAttribute("disabled");
-                  }
-                  editor.undoFinishedStatus = 1;
-                }
-              );
-            } else if (editor.currentStateIndex == 0) {
-              canvas.clear();
-              editor.undoFinishedStatus = 1;
-              editor.undoButton?.disabled = "disabled";
-              editor.redoButton?.removeAttribute("disabled");
-              editor.currentStateIndex -= 1;
-            }
-          }
-        }
-        return {
-          ...prev,
-          editor: editor,
-        };
-      } else {
-        return prev;
-      }
-    });
+    console.log("undo called");
+    canvas?.undo();
   };
 
   const redo = function () {
-    console.log("redo called")
-    setEditorState((prev) => {
-      let editor = { ...prev.editor };
-
-      if (editor.redoFinishedStatus) {
-        if (
-          editor.currentStateIndex == editor.canvasState.length - 1 &&
-          editor.currentStateIndex != -1
-        ) {
-          editor.redoButton?.disabled = "disabled";
-        } else {
-          if (
-            editor.canvasState.length > editor.currentStateIndex &&
-            editor.canvasState.length != 0
-          ) {
-            editor.redoFinishedStatus = 0;
-            editor.redoStatus = true;
-            canvas.loadFromJSON(
-              editor.canvasState[editor.currentStateIndex + 1],
-              function () {
-                var jsonData = JSON.parse(
-                  editor.canvasState[editor.currentStateIndex + 1]
-                );
-                canvas.renderAll();
-                editor.redoStatus = false;
-                editor.currentStateIndex += 1;
-                if (editor.currentStateIndex != -1) {
-                  editor.undoButton?.removeAttribute("disabled");
-                }
-                editor.redoFinishedStatus = 1;
-                if (
-                  editor.currentStateIndex == editor.canvasState.length - 1 &&
-                  editor.currentStateIndex != -1
-                ) {
-                  editor.redoButton?.disabled = "disabled";
-                }
-              }
-            );
-          }
-        }
-
-        return {
-          ...prev,
-          editor: editor,
-        };
-      } else {
-        return prev;
-      }
-    });
+    console.log("redo called");
+    canvas?.redo();
   };
 
   const addRect = function () {
     let rect = new fabric.Rect({
-      left: getRandBetween(10,700),
-      top: getRandBetween(10,700),           
+      left: getRandBetween(10, 700),
+      top: getRandBetween(10, 700),
       fill: randomColor(),
       width: 200,
       height: 200,
-      name:"rectangle",
+      name: "rectangle",
     });
     canvas.add(rect);
     setActiveObject(rect);
@@ -332,51 +213,124 @@ export const useEditorStateModifier = () => {
 
   const addCircle = function () {
     let circle = new fabric.Circle({
-            left: getRandBetween(10,700),
-            top: getRandBetween(10,700),                
-            radius:150,
-            stroke:randomColor(),
-            strokeWidth:3,
-            name:"circle",
-            fill:''
+      left: getRandBetween(10, 700),
+      top: getRandBetween(10, 700),
+      radius: 150,
+      stroke: randomColor(),
+      strokeWidth: 3,
+      name: "circle",
+      fill: "",
     });
     canvas.add(circle);
     setActiveObject(circle);
   };
 
-
   const addText = function () {
-    let text = new fabric.Textbox('Text', { 
-      fontFamily: 'Delicious_500', 
-      left: getRandBetween(10,700),
-      top: getRandBetween(10,700), 
-      name:"text",
-      editable: true,     
-    })
+    let text = new fabric.Textbox("Text", {
+      fontFamily: "Delicious_500",
+      left: getRandBetween(10, 700),
+      top: getRandBetween(10, 700),
+      name: "text",
+      editable: true,
+    });
     canvas.add(text);
     setActiveObject(text);
   };
 
   const deleteImage = function () {
-  console.log("delete called")
-   if(canvas){
-    var selected = canvas.getActiveObjects(),
-    selGroup = new fabric.ActiveSelection(selected, {
-        canvas: canvas
-    });
-if (selGroup) {
-  selGroup.forEachObject(function (obj) {
-    canvas.remove(obj);
-});
-} else {
-    return false;
-}
-// Use discardActiveObject to remove the selection border
+    if (canvas) {
+      const activeObjects = canvas.getActiveObjects();
+      // remove objects
+      if (activeObjects.length > 0) {
+        canvas.offHistory();
 
-canvas.discardActiveObject().renderAll();
-clearActiveObject();
-   }
-};
+        for (var i = 0; i < activeObjects.length; i++) {
+          if (!activeObjects[i].isEditing) {
+            canvas.remove(activeObjects[i]);
+          }
+        }
+        canvas.onHistory();
+        canvas.discardActiveObject().renderAll();
+        clearActiveObject();
+      }
+    }
+  };
+
+  const cloneSelection = () => {
+    if (canvas) {
+      let _clipboard = null;
+      canvas.getActiveObject().clone(function (cloned) {
+        _clipboard = cloned;
+        _clipboard.clone(function (clonedObj) {
+          canvas.discardActiveObject();
+          clonedObj.set({
+            left: clonedObj.left + 10,
+            top: clonedObj.top + 10,
+            evented: true,
+          });
+          if (clonedObj.type === "activeSelection") {
+            // active selection needs a reference to the canvas.
+            clonedObj.canvas = canvas;
+            clonedObj.forEachObject(function (obj) {
+              canvas.add(obj);
+            });
+            // this should solve the unselectability
+            clonedObj.setCoords();
+          } else {
+            canvas.add(clonedObj);
+          }
+          _clipboard.top += 10;
+          _clipboard.left += 10;
+          setActiveObject(clonedObj);
+          canvas.requestRenderAll();
+        });
+      });
+    } else {
+      console.log("canvas not ready");
+    }
+  };
+
+  const onObjectMove = (e) => {
+    console.log("move", e);
+  };
+  const onObjectAdded = ({ target }) => {
+    target.set({
+      scaleY: target.scaleY || 1,
+      scaleX: target.scaleX || 1,
+      name: target.name || editor.drawingMode.tool || "untitled",
+      obId: nanoid(10),
+    });
+    updateCanvasState();
+  };
+  const onObjectRemoved = ({ target }) => {
+    updateCanvasState();
+  };
+
+  const onSelectedCreated = ({ e, selected }) => {
+    setSelectedObjects(selected);
+  };
+  const onSelectedCleared = ({ e, selected }) => {
+    clearActiveObject();
+    setSelectedObjects([]);
+  };
+
+  const onObjectModified = (e) => {
+    // updateCanvasState();
+  };
+
+  const onHistoryModified = (e) => {
+    const { historyRedo, historyUndo } = canvas;
+    setEditorState((prev) => {
+      return {
+        ...prev,
+        editor: {
+          ...prev.editor,
+          historyRedo: historyRedo || [],
+          historyUndo: historyUndo || [],
+        },
+      };
+    });
+  };
 
   return {
     setFullScreenMenuOpen,
@@ -396,6 +350,14 @@ clearActiveObject();
     undo,
     redo,
     updateCanvasState,
-    deleteImage
+    deleteImage,
+    onObjectMove,
+    onObjectAdded,
+    onObjectModified,
+    onObjectRemoved,
+    onSelectedCreated,
+    onSelectedCleared,
+    onHistoryModified,
+    cloneSelection,
   };
 };
