@@ -4,7 +4,7 @@ function Document() {
   return (
     <Html>
       <Head>
-        <title>ICVG POC</title>
+        <title>Goriber figma</title>
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"

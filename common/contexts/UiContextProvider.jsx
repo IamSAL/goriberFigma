@@ -9,6 +9,11 @@ export const defaultUiState = {
   footerVisibility: true,
   sideMenuVisibility: false,
   webAuthnSupport: false,
+  contextMenu: {
+    show: false,
+    type: "editor",
+    position: { x: 0, y: 0 },
+  },
 };
 
 export const UiContextProvider = ({ children }) => {
@@ -95,9 +100,23 @@ export const useUiStateModifier = () => {
     });
   };
 
+  const setContextMenu = (show, type = "editor", position = { x: 0, y: 0 }) => {
+    setUiState((prev) => {
+      return {
+        ...prev,
+        contextMenu: {
+          show: show,
+          type: type,
+          position: { x: position.x, y: position.y },
+        },
+      };
+    });
+  };
+
   return {
     setFullScreenMenuOpen,
     setHeaderFooterVisibility,
     setsideMenuVisibility,
+    setContextMenu,
   };
 };

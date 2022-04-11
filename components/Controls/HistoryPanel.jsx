@@ -18,8 +18,9 @@ export default function HistoryPanel({ EditorState }) {
   const [dense, setDense] = useState(false);
   const [activeHistory, setactiveHistory] = useState(null);
   const listRef = useRef();
+  const previewRef = useRef();
   const handleListItemClick = (event, index, object) => {
-    canvas?.goToHistory(JSON.stringify(object));
+    canvas?.goToHistory(object);
   };
 
   useEffect(() => {
@@ -33,12 +34,12 @@ export default function HistoryPanel({ EditorState }) {
   return (
     <Box sx={{ width: "100%" }}>
       <List
-        dense={dense}
+        dense={true}
         sx={{
           "& .Mui-selected": {
             backgroundColor: "rgb(217, 217, 217) !important",
           },
-          maxHeight: "63vh",
+          maxHeight: "75vh",
           overflowY: "scroll",
           height: "100vh",
           width: "100%",
@@ -46,12 +47,17 @@ export default function HistoryPanel({ EditorState }) {
         onMouseLeave={(e) => {
           setactiveHistory(null);
         }}
+        onMouseMove={(e) => {
+          if (previewRef.current) {
+            previewRef.current.style.top = e.clientY + "px";
+          }
+        }}
         ref={listRef}
       >
         {historyUndo.map((object, idx) => {
           return (
             <HistoryItem
-              object={JSON.parse(object)}
+              object={object}
               key={idx}
               handleListItemClick={handleListItemClick}
               setactiveHistory={setactiveHistory}
@@ -60,17 +66,14 @@ export default function HistoryPanel({ EditorState }) {
         })}
       </List>
 
-      <div className="history-preview">
-        {activeHistory ? (
-          <>
+      {activeHistory && (
+        <>
+          <div className="history-preview" ref={previewRef}>
+            {/* <h6>{new Date(activeHistory.time).toLocaleTimeString()}</h6> */}
             <HistoryPreview activeHistory={activeHistory} />
-          </>
-        ) : (
-          <p className="text-center text-muted py-5">
-            Hover over a history to preview.
-          </p>
-        )}
-      </div>
+          </div>
+        </>
+      )}
     </Box>
   );
 }

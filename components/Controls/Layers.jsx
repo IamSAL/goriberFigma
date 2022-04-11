@@ -10,12 +10,18 @@ export default function Layers({ EditorState }) {
     canvas,
   } = EditorState;
 
-  const { setActiveObject, setSelectedObjects, removeObject, renameObject } =
-    useEditorStateModifier();
-  const [dense, setDense] = React.useState(false);
+  const {
+    setActiveObject,
+    setSelectedObjects,
+    removeObject,
+    renameObject,
+    isSelected,
+  } = useEditorStateModifier();
+  const [dense, setDense] = React.useState(true);
   const [secondary, setSecondary] = React.useState(false);
   const [open, setOpen] = React.useState(true);
   const [editing, setediting] = React.useState(false);
+
   const handleClick = () => {
     setOpen(!open);
   };
@@ -23,18 +29,6 @@ export default function Layers({ EditorState }) {
   const handleListItemClick = (event, index, object) => {
     setSelectedObjects([object]);
     // canvas?.setActiveObject(object);
-  };
-
-  const isSelected = (object) => {
-    if (activeObject?.obId == object.obId) {
-      return true;
-    } else if (selectedObjects.some((ob) => ob.obId == object.obId)) {
-      return true;
-    } else if (canvas.getActiveObject()?.obId == object.obId) {
-      return true;
-    } else {
-      return false;
-    }
   };
 
   return (
@@ -47,7 +41,7 @@ export default function Layers({ EditorState }) {
           },
 
           overflowY: "scroll",
-          height: "100vh",
+          maxHeight: "80vh",
           width: "100%",
         }}
       >

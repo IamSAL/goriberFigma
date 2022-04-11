@@ -5,8 +5,7 @@ export const setupHistoryModule = (fabric, options) => {
   fabric.Canvas.prototype._historyNext = function (e) {
     const historyItem = this.toDatalessJSON(this.extraProps);
     historyItem.time = Date.now();
-    console.log(historyItem);
-    return JSON.stringify(historyItem);
+    return historyItem;
   };
 
   /**
@@ -29,7 +28,7 @@ export const setupHistoryModule = (fabric, options) => {
     this.historyRedo = [];
     this.extraProps = ["selectable"];
     this.historyNextState = this._historyNext();
-
+    this.historyMaxLength = 50;
     this.on(this._historyEvents());
   };
 
@@ -46,7 +45,18 @@ export const setupHistoryModule = (fabric, options) => {
   fabric.Canvas.prototype._historySaveAction = function (e) {
     if (this.historyProcessing) return;
     const json = this.historyNextState;
-    this.historyUndo.push(json);
+    if (this.historyUndo.length > this.historyMaxLength) {
+      this.historyUndo = [
+        ...this.historyUndo.slice(
+          this.historyUndo.length - this.historyMaxLength,
+          this.historyUndo.length
+        ),
+        json,
+      ];
+    } else {
+      this.historyUndo.push(json);
+    }
+
     this.historyNextState = this._historyNext();
     this.fire("history:append", { json: json });
   };
@@ -111,7 +121,7 @@ export const setupHistoryModule = (fabric, options) => {
   fabric.Canvas.prototype._loadHistory = function (history, event, callback) {
     var that = this;
 
-    this.loadFromJSON(history, function () {
+    this.loadFromJSON(JSON.stringify(history), function () {
       that.renderAll();
       that.fire(event);
       that.historyProcessing = false;

@@ -110,19 +110,18 @@ export const useEditorStateModifier = () => {
   };
 
   const setSelectedObjects = (objects) => {
+    if (objects.length == 1) {
+      canvas?.setActiveObject(objects[0] || null);
+      canvas?.renderAll();
+    }
+
     setEditorState((prev) => {
-      if (objects.length == 1) {
-        canvas?.setActiveObject(objects[0] || null);
-      }
-      return {
-        ...prev,
-        editor: {
-          ...prev.editor,
-          selectedObjects: objects || [],
-          activeObject: objects[0] || null,
-        },
-      };
+      const newState = { ...prev };
+      newState.editor.selectedObjects = objects || [];
+      newState.editor.activeObject = objects[0] || null;
+      return newState;
     });
+    //setActiveObject(objects[0] || null);
   };
   const setDrawingMode = (drawingOptions) => {
     if (canvas) {
@@ -332,6 +331,20 @@ export const useEditorStateModifier = () => {
     });
   };
 
+  const isSelected = (object) => {
+    if (editor.activeObject?.obId == object.obId) {
+      return true;
+    } else if (editor.selectedObjects.some((ob) => ob.obId == object.obId)) {
+      return true;
+    } else if (canvas.getActiveObject()?.obId == object.obId) {
+      return true;
+    } else if (canvas.getActiveObjects().some((ob) => ob.obId == object.obId)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   return {
     setFullScreenMenuOpen,
     setHeaderFooterVisibility,
@@ -359,5 +372,6 @@ export const useEditorStateModifier = () => {
     onSelectedCleared,
     onHistoryModified,
     cloneSelection,
+    isSelected,
   };
 };

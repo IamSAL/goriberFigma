@@ -82,8 +82,16 @@ button[disabled] {
 }
 
 
-.history-preview {max-height: 175px;overflow: hidden;width: 258px;border: 1px solid #d1cece;z-index: 2;position: fixed;bottom: 20px;
-
+.history-preview {max-height: 175px;overflow: hidden;width: 258px;max-width:16.66vw; border: 2px solid #d1cece;z-index: 2;position: fixed;bottom: 20px;
+  left:17.66vw;
+  transition: 0.15s;
+  background-color: rgba(232, 232, 232,1);
   img {width: 100%;height: auto;}
 }
 
+.context_menu{
+  position: absolute !important;
+  z-index: 3;
+  width: 250px !important;
+  height: fit-content !important;
+}
