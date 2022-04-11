@@ -3,6 +3,7 @@ import "../asset/scss/style.scss";
 import "react-toastify/dist/ReactToastify.css";
 import { UiContextProvider } from "./../common/contexts/UiContextProvider";
 import { EditorProvider } from "../common/contexts/EditorProvider";
+
 import Layout from "./../components/Layouts/Layout";
 import * as React from "react";
 import Checkbox from "@mui/material/Checkbox";

@@ -9,6 +9,7 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import UndoIcon from "@mui/icons-material/Undo";
 import RedoIcon from "@mui/icons-material/Redo";
 import PanToolOutlinedIcon from "@mui/icons-material/PanToolOutlined";
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import {
   useEditor,
   useEditorState,
@@ -19,7 +20,7 @@ import IconButton from "@mui/material/IconButton";
 import DropMenuZoom from "./DropMenuZoom";
 import { FiMove } from "react-icons/fi";
 export default function OptionTools() {
-  const { setDrawingMode, undo, redo } = useEditorStateModifier();
+  const { setDrawingMode, undo, redo,cloneSelection,getActiveObject} = useEditorStateModifier();
   const [elementTool, setElementTool] = React.useState(() => [""]);
   const [EditorState, setEditorState] = useEditorState();
   const undoBtnRef = useRef();
@@ -29,28 +30,28 @@ export default function OptionTools() {
   const [panMode, setpanMode] = useState();
 
   useEffect(() => {
-    if (panMode != editor.panMode) {
-      setpanMode(editor.panMode);
+    // if (panMode != editor.panMode) {
+    //   setpanMode(editor.panMode);
+    // }
+    const { historyRedo, historyUndo } = editor;
+    if (historyRedo.length == 0) {
+      redoBtnRef.current?.disabled = true;
+    } else {
+      redoBtnRef.current?.disabled = false;
     }
+    if (historyUndo.length == 0) {
+      undoBtnRef.current?.disabled = true;
+    } else {
+      undoBtnRef.current?.disabled = false;
+    }
+
+    // if(canvas?.getActiveObjects()){
+
+    // }else{
+
+    // }
     return () => {};
   }, [editor]);
-
-  useEffect(() => {
-    if (undoBtnRef.current && redoBtnRef.current) {
-      setEditorState((prev) => {
-        return {
-          ...prev,
-          editor: {
-            ...prev.editor,
-            undoButton: undoBtnRef.current,
-            redoButton: redoBtnRef.current,
-          },
-        };
-      });
-    }
-
-    return () => {};
-  }, [undoBtnRef, redoBtnRef]);
 
   useEffect(() => {
     setpanMode(canvas?.dragMode);
@@ -71,6 +72,34 @@ export default function OptionTools() {
     });
     return () => {};
   }, [panMode, canvas]);
+
+
+  useEffect(() => {
+
+
+    const setDragShortCut=({  key,code, ctrlKey,shiftKey,altKey,metaKey } = event)=>{
+     const objects=canvas.getActiveObjects()
+      if (code === "Space" && objects.length==0) {
+        setpanMode(true)
+      }
+
+    }
+    const unsetDragShortCut=({  key,code, ctrlKey,shiftKey,altKey,metaKey } = event)=>{
+      const objects=canvas.getActiveObjects()
+      if (code === "Space" && objects.length==0) {
+        setpanMode(false)
+      }
+    }
+    document.addEventListener('keydown',setDragShortCut)
+    document.addEventListener('keyup',unsetDragShortCut)
+
+    return () => {
+      document.removeEventListener('keydown',setDragShortCut)
+      document.removeEventListener('keyup',unsetDragShortCut)
+     
+    }
+  }, [canvas])
+  
 
   const handleElementTool = (event, newTool) => {
     setElementTool(newTool || "move");
@@ -104,6 +133,9 @@ export default function OptionTools() {
           },
         }}
       >
+        <IconButton aria-label="left aligned" id="undo" onClick={cloneSelection} disabled={editor.activeObject?false:true}>
+          <ContentCopyIcon color={"white"} />
+        </IconButton>
         <IconButton aria-label="left aligned" id="undo" onClick={togglePan}>
           <FiMove color={panMode ? "rgb(167 86 255)" : "grey"} />
         </IconButton>

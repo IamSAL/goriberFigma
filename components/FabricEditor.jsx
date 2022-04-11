@@ -7,8 +7,8 @@ import {
 
 } from "./../common/contexts/EditorProvider";
 import { getSvgParts } from "./../common/getSvgParts";
-import { nanoid } from "nanoid";
-let circle, rect, isDown, origX, origY;
+
+
 
 const FabricEditor = () => {
   const [EditorState, setEditorState] = useEditorState();
@@ -16,102 +16,20 @@ const FabricEditor = () => {
   const { canvas,editor } = EditorState;
 
   const {
-    setCanvas,
-    setActiveObject,
-    clearActiveObject,
-    setSelectedObjects,
-    updateCanvasState,
-    deleteImage
+    deleteImage,
+    undo, redo,
+    onObjectMove,
+    onObjectAdded,
+    onObjectModified,
+    onObjectRemoved,
+    onSelectedCreated,
+    onSelectedCleared,
+    onHistoryModified,
   } = useEditorStateModifier();
 
-;
 
-  const onObjectMove = (e) => {
-    console.log("move", e);
-  };
-  const onObjectAdded = ({ target }) => {
-    console.log("added", target);
-    target.set({
-      scaleY: target.scaleY || 1,
-      scaleX: target.scaleX || 1,
-      name:target.name||editor.drawingMode.tool||"untitled",
-      obId: nanoid(10),
-    });
-    updateCanvasState();
-  
-  };
-  const onObjectRemoved = ({ target }) => {
-    console.log("removed", target);
-    updateCanvasState();
-  };
 
-  const onSelectedCreated = ({ e, selected }) => {
-    console.log("selection", e);
-    setSelectedObjects(selected);
-  };
-  const onSelectedCleared = ({ e, selected }) => {
-    console.log("selection cleared", e);
-    clearActiveObject();
-    setSelectedObjects([]);
-  };
-
-  const onObjectModified = (e) => {
-    console.log("modified", e);
-    updateCanvasState();
-  };
-
-  const onCanvasMouseDown = (o, editor, canvas) => {
-    isDown = true;
-    var pointer = canvas.getPointer(o.e);
-    origX = pointer.x;
-    origY = pointer.y;
-
-    console.log(editor.drawingMode);
-
-    if (editor.drawingMode.tool == "circle") {
-      circle = new fabric.Circle({
-        left: origX,
-        top: origY,
-        originX: "left",
-        originY: "top",
-        radius: pointer.x - origX,
-        angle: 0,
-        fill: "",
-        stroke: "red",
-        strokeWidth: 3,
-      });
-      canvas?.add(circle);
-    }
-  };
-
-  const onCanvasMouseMove = (o, editor, canvas) => {
-    if (!isDown) return;
-    var pointer = canvas?.getPointer(o.e);
-
-    if (editor.drawingMode.tool == "circle") {
-      var radius =
-        Math.max(Math.abs(origY - pointer.y), Math.abs(origX - pointer.x)) / 2;
-      if (radius > circle.strokeWidth) {
-        radius -= circle.strokeWidth / 2;
-      }
-      circle.set({ radius: radius });
-
-      if (origX > pointer.x) {
-        circle.set({ originX: "right" });
-      } else {
-        circle.set({ originX: "left" });
-      }
-      if (origY > pointer.y) {
-        circle.set({ originY: "bottom" });
-      } else {
-        circle.set({ originY: "top" });
-      }
-      canvas.renderAll();
-    }
-  };
-  const onCanvasMouseUp = (o) => {
-    isDown = false;
-  };
+ 
 
   useEffect(() => {
     if (canvas) {
@@ -122,6 +40,11 @@ const FabricEditor = () => {
       canvas.on("selection:created", onSelectedCreated);
       canvas.on("selection:updated", onSelectedCreated);
       canvas.on("selection:cleared", onSelectedCleared);
+      canvas.on("history:append",onHistoryModified);
+      canvas.on("history:undo",onHistoryModified);
+      canvas.on("history:redo",onHistoryModified);
+      canvas.on("history:clear",onHistoryModified);
+
 
       var reactAtom = new fabric.Path(getSvgParts("center"));
      
@@ -142,13 +65,38 @@ const FabricEditor = () => {
       canvas.add(reactAtom);
       canvas.renderAll();
 
-      document.body.onkeydown = function (e) {
-        switch (e.keyCode) {
-          case 46: // delete
-            deleteImage();
-            break;
+
+
+      document.addEventListener('keyup', ({  key,code, ctrlKey,shiftKey,altKey,metaKey } = event) => {
+
+        console.log({key,code, ctrlKey,shiftKey,altKey,metaKey})
+
+ 
+         // Check pressed button is Z - Ctrl+Shift+Z.
+         if (ctrlKey && shiftKey  && code === "KeyZ") {
+          redo()
+          return;
+      }
+
+        if (code === "Backspace"||code === "Delete") {
+          deleteImage();
+          return;
         }
-      };
+       
+        // Check pressed button is Z - Ctrl+Z.
+        if ( ctrlKey && code === "KeyZ") {
+          
+            undo()
+            return;
+        }
+
+        // Check pressed button is Y - Ctrl+Y.
+        if (ctrlKey && code === "KeyY") {
+            redo()
+            return;
+        }
+
+    });
 
     }
     console.log("canvas changed");

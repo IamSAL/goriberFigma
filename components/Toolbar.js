@@ -13,6 +13,7 @@ import Layers from "./Controls/Layers";
 
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
+import HistoryPanel from "./Controls/HistoryPanel";
 
 function a11yProps(index) {
   return {
@@ -41,13 +42,15 @@ const Toolbar = () => {
       >
         <Tab label="Layers" {...a11yProps(0)} />
 
-        <Tab label="Assets" {...a11yProps(1)} />
-        <Tab label="Settings" {...a11yProps(2)} disabled />
-        <Tab label="Export" {...a11yProps(2)} disabled />
+        <Tab label="History" {...a11yProps(1)} />
+        <Tab label="Assets" {...a11yProps(2)} />
+        <Tab label="Settings" {...a11yProps(3)} disabled />
+        <Tab label="Export" {...a11yProps(4)} disabled />
       </Tabs>
       <div className="tool-bar-content">
         {value == 0 && <Layers EditorState={EditorState} />}
-        {value == 1 && (
+        {value == 1 && <HistoryPanel EditorState={EditorState} />}
+        {value == 3 && (
           <div className="p-4">
             <ShapePicker />
           </div>
