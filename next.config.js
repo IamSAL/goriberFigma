@@ -16,6 +16,15 @@ const nextConfig = {
     locales: ["en", "bn"],
     defaultLocale: "en",
   },
+  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+    // Important: return the modified config
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      fabric: "fabric-pure-browser",
+      // your aliases
+    };
+    return config;
+  },
 };
 
 module.exports = nextConfig;
