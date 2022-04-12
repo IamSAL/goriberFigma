@@ -1,6 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../asset/scss/style.scss";
 import "react-toastify/dist/ReactToastify.css";
+import "react-contexify/dist/ReactContexify.css";
 import { UiContextProvider } from "./../common/contexts/UiContextProvider";
 import { EditorProvider } from "../common/contexts/EditorProvider";
 

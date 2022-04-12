@@ -1,9 +1,17 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
+import {
+  Menu,
+  Item,
+  Separator,
+  Submenu,
+  useContextMenu,
+} from "react-contexify";
 import LayerItem from "./LayerItem.jsx";
-
 import { useEditorStateModifier } from "../../common/contexts/EditorProvider";
+import LayerItemMenu from "../LayerItemMenu.jsx";
+
 export default function Layers({ EditorState }) {
   const {
     editor: { activeObject, selectedObjects, allObjects, drawingMode },
@@ -42,10 +50,11 @@ export default function Layers({ EditorState }) {
 
           overflowY: "scroll",
           maxHeight: "80vh",
+          minHeight: "80vh",
           width: "100%",
         }}
       >
-        {allObjects.map((object, idx) => {
+        {canvas?.getObjects()?.map((object, idx) => {
           return (
             <LayerItem
               object={object}

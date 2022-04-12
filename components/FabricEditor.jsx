@@ -9,7 +9,10 @@ import {
 import { getSvgParts } from "./../common/getSvgParts";
 import { useUiStateModifier } from "../common/contexts/UiContextProvider";
 import ContextMenu from './ContextMenu';
-
+import {
+  useContextMenu,
+} from "react-contexify";
+import CanvasMenu from "./CanvasMenu";
 
 
 const FabricEditor = () => {
@@ -29,9 +32,58 @@ const {setContextMenu}=useUiStateModifier()
     onHistoryModified,
   } = useEditorStateModifier();
 
+  const { show:showLayerMenu } = useContextMenu({
+    id: "layer-item-menu",
+  });
 
+
+  const { show:showCanvasMenu } = useContextMenu({
+    id: "canvas-menu",
+  });
 
  
+
+  function handleContextMenu(e,props) {
+    e.preventDefault();
+
+    let objectFound = false;
+    let clickPoint = new fabric.Point(e.offsetX, e.offsetY);
+    let currentObj=null
+    canvas?.getObjects().forEach(obj=>{
+      if (!objectFound && obj.containsPoint(clickPoint)) {
+        objectFound = true;
+        console.log("context",obj)
+        currentObj=obj
+        //TODO: whatever you want with the object
+      
+        
+        
+    }
+    })
+
+    if(objectFound && currentObj){
+    
+      showLayerMenu(e, {
+        props: {
+          object: currentObj,
+        },
+      });
+   
+    }else{
+     
+      showCanvasMenu(e, {
+        props: {
+          postion:{x:0,y:0}
+        }
+      });
+    }
+
+    
+
+  
+   
+  }
+
 
   useEffect(() => {
     if (canvas) {
@@ -102,20 +154,26 @@ const {setContextMenu}=useUiStateModifier()
 
 
 
-    document.querySelector('.upper-canvas').addEventListener('contextmenu', function (e) {
-      var objectFound = false;
-      var clickPoint = new fabric.Point(e.offsetX, e.offsetY);
-      setContextMenu(true,"editor",{x:e.clientX, y:e.clientY})
-      console.log("context clicked")
-      e.preventDefault();
-      canvas.forEachObject(function (obj) {
-          if (!objectFound && obj.containsPoint(clickPoint)) {
-              objectFound = true;
-              console.log("context",obj)
-              //TODO: whatever you want with the object
-          }
-      });
-  });
+  //   document.querySelector('.upper-canvas').addEventListener('contextmenu', function (e) {
+  //     var objectFound = false;
+  //     var clickPoint = new fabric.Point(e.offsetX, e.offsetY);
+  //     setContextMenu(true,"editor",{x:e.clientX, y:e.clientY})
+  //     console.log("context clicked")
+  //     e.preventDefault();
+  //     canvas.forEachObject(function (obj) {
+  //         if (!objectFound && obj.containsPoint(clickPoint)) {
+  //             objectFound = true;
+  //             console.log("context",obj)
+  //             //TODO: whatever you want with the object
+  //         }
+  //     });
+  // });
+
+  
+    document.querySelector('.upper-canvas').addEventListener('contextmenu', (e)=>{
+      handleContextMenu(e,{})
+    });
+
 
     }
     console.log("canvas changed");
@@ -125,28 +183,16 @@ const {setContextMenu}=useUiStateModifier()
     };
   }, [canvas]);
 
-  // useEffect(() => {
-  //   if (canvas) {
-  //     canvas.off("mouse:down", (o) => onCanvasMouseDown(o, editor, canvas));
-  //     canvas.off("mouse:move", (o) => onCanvasMouseMove(o, editor, canvas));
-  //     canvas.off("mouse:up", (o) => onCanvasMouseUp(o));
-  //     canvas.on("mouse:down", (o) => onCanvasMouseDown(o, editor, canvas));
-  //     canvas.on("mouse:move", (o) => onCanvasMouseMove(o, editor, canvas));
-  //     canvas.on("mouse:up", (o) => onCanvasMouseUp(o));
-  //   }
-  
-  //   return () => {};
-  // }, [editor, canvas]);
+
+
+
+
 
   return (
   <>
     <CanvasFabric
-      onContextMenu={(e) => {
-        e.preventDefault();
-        setcontextMenuStatus(true);
-      }}
+    onContextMenu={(e) => handleContextMenu(e, object)}
     />
-    <ContextMenu/>
   </>
   );
 };

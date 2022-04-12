@@ -4,6 +4,9 @@ import Grid from "@mui/material/Grid";
 import Controls from "./Controls";
 import Toolbar from "./Toolbar";
 import FabricEditor from "./FabricEditor";
+import CanvasMenu from "./CanvasMenu";
+import LayerItemMenu from "./LayerItemMenu";
+import ContextMenus from "./ContextMenus";
 
 const Editor = () => {
   return (
@@ -38,6 +41,7 @@ const Editor = () => {
           }}
         >
           <FabricEditor />
+          <ContextMenus />
         </Paper>
       </Grid>
       <Grid item xs={2}>

@@ -34,4 +34,4 @@ const HistoryItem = ({ object, handleListItemClick, setactiveHistory }) => {
   );
 };
 
-export default HistoryItem;
+export default React.memo(HistoryItem);

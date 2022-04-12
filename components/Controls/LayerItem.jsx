@@ -5,6 +5,10 @@ import ListItemText from "@mui/material/ListItemText";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import { TextField } from "@mui/material";
 import DropdMenu from "../DropMenu";
+import LayerItemMenu from "../LayerItemMenu";
+import {
+  useContextMenu,
+} from "react-contexify";
 
 const LayerItem = ({
   object,
@@ -16,20 +20,27 @@ const LayerItem = ({
 }) => {
   const [isEditing, setisEditing] = useState(false);
 
+  const { show } = useContextMenu({
+    id: "layer-item-menu",
+  });
+
+  function handleContextMenu(event, object) {
+    event.preventDefault();
+    show(event, {
+      props: {
+        object: object,
+      },
+    });
+  }
+
   return (
     <ListItem
       sx={{
         cursor: "pointer",
         width: "100%",
       }}
-      secondaryAction={
-        <DropdMenu
-          onDelete={() => {
-            removeObject(object);
-          }}
-        />
-      }
       selected={isSelected(object)}
+      onContextMenu={(e) => handleContextMenu(e, object)}
     >
       <ListItemIcon
         onClick={(event) => handleListItemClick(event, 0, object)}
@@ -68,4 +79,4 @@ const LayerItem = ({
   );
 };
 
-export default LayerItem;
+export default React.memo(LayerItem);

@@ -289,9 +289,7 @@ export const useEditorStateModifier = () => {
     }
   };
 
-  const onObjectMove = (e) => {
-    console.log("move", e);
-  };
+  const onObjectMove = (e) => {};
   const onObjectAdded = ({ target }) => {
     target.set({
       scaleY: target.scaleY || 1,
@@ -317,20 +315,6 @@ export const useEditorStateModifier = () => {
     // updateCanvasState();
   };
 
-  const onHistoryModified = (e) => {
-    const { historyRedo, historyUndo } = canvas;
-    setEditorState((prev) => {
-      return {
-        ...prev,
-        editor: {
-          ...prev.editor,
-          historyRedo: historyRedo || [],
-          historyUndo: historyUndo || [],
-        },
-      };
-    });
-  };
-
   const isSelected = (object) => {
     if (editor.activeObject?.obId == object.obId) {
       return true;
@@ -343,6 +327,20 @@ export const useEditorStateModifier = () => {
     } else {
       return false;
     }
+  };
+
+  const onHistoryModified = (e) => {
+    const { historyRedo, historyUndo } = canvas;
+    setEditorState((prev) => {
+      return {
+        ...prev,
+        editor: {
+          ...prev.editor,
+          historyRedo: historyRedo || [],
+          historyUndo: historyUndo || [],
+        },
+      };
+    });
   };
 
   return {
@@ -370,8 +368,8 @@ export const useEditorStateModifier = () => {
     onObjectRemoved,
     onSelectedCreated,
     onSelectedCleared,
-    onHistoryModified,
     cloneSelection,
     isSelected,
+    onHistoryModified,
   };
 };

@@ -8,14 +8,9 @@ import { useEditorStateModifier } from "../../common/contexts/EditorProvider";
 import HistoryItem from "./HistoryItem.jsx";
 import HistoryPreview from "../HistoryPreview.jsx";
 export default function HistoryPanel({ EditorState }) {
-  const {
-    editor: { historyRedo, historyUndo },
-    canvas,
-  } = EditorState;
+  const { canvas } = EditorState;
 
-  const { setActiveObject, setSelectedObjects, removeObject, renameObject } =
-    useEditorStateModifier();
-  const [dense, setDense] = useState(false);
+  const [dense, setDense] = useState(true);
   const [activeHistory, setactiveHistory] = useState(null);
   const listRef = useRef();
   const previewRef = useRef();
@@ -23,18 +18,10 @@ export default function HistoryPanel({ EditorState }) {
     canvas?.goToHistory(object);
   };
 
-  useEffect(() => {
-    if (listRef.current) {
-      listRef.current.scrollTop = listRef.current.scrollHeight;
-    }
-
-    return () => {};
-  }, [EditorState]);
-
   return (
     <Box sx={{ width: "100%" }}>
       <List
-        dense={true}
+        dense={dense}
         sx={{
           "& .Mui-selected": {
             backgroundColor: "rgb(217, 217, 217) !important",
@@ -54,7 +41,7 @@ export default function HistoryPanel({ EditorState }) {
         }}
         ref={listRef}
       >
-        {historyUndo.map((object, idx) => {
+        {canvas?.historyUndo?.map((object, idx) => {
           return (
             <HistoryItem
               object={object}
