@@ -9,6 +9,7 @@ import { useAuth } from "./AuthProvider";
 import { fabric } from "fabric";
 import { getRandBetween, randomColor } from "./../helpers";
 import { nanoid } from "nanoid";
+import { useUiState } from "./UiContextProvider";
 
 export const EditorContext = createContext();
 export const defaultEditorState = {
@@ -71,7 +72,7 @@ export const useEditor = () => {
 
 export const useEditorStateModifier = () => {
   const [EditorState, setEditorState] = useContext(EditorContext);
-
+  const [UiState, setUiState] = useUiState();
   const { editor, canvas } = EditorState;
 
   const setFullScreenMenuOpen = (show) => {
@@ -102,7 +103,7 @@ export const useEditorStateModifier = () => {
     setEditorState((prev) => {
       return {
         ...prev,
-        editor: { ...prev.editor, activeObject: object },
+        editor: { ...prev.editor, activeObject: canvas?.getActiveObject() },
       };
     });
 
@@ -179,7 +180,6 @@ export const useEditorStateModifier = () => {
     setEditorState((prev) => {
       let editor = { ...prev.editor };
       const allNewObjects = canvas?.getObjects();
-
       return {
         ...prev,
         editor: { ...editor, allObjects: allNewObjects || [] },
@@ -238,20 +238,29 @@ export const useEditorStateModifier = () => {
 
   const deleteImage = function () {
     if (canvas) {
-      const activeObjects = canvas.getActiveObjects();
-      // remove objects
-      if (activeObjects.length > 0) {
-        canvas.offHistory();
+      setUiState((prev) => {
+        return { ...prev, loading: true };
+      });
 
-        for (var i = 0; i < activeObjects.length; i++) {
-          if (!activeObjects[i].isEditing) {
-            canvas.remove(activeObjects[i]);
+      setTimeout(() => {
+        const activeObjects = canvas.getActiveObjects();
+        // remove objects
+        if (activeObjects.length > 0) {
+          canvas.offHistory();
+
+          for (var i = 0; i < activeObjects.length; i++) {
+            if (!activeObjects[i].isEditing) {
+              canvas.remove(activeObjects[i]);
+            }
           }
+          canvas.onHistory();
+          canvas.discardActiveObject().renderAll();
+          clearActiveObject();
         }
-        canvas.onHistory();
-        canvas.discardActiveObject().renderAll();
-        clearActiveObject();
-      }
+        setUiState((prev) => {
+          return { ...prev, loading: false };
+        });
+      }, 100);
     }
   };
 
@@ -281,7 +290,6 @@ export const useEditorStateModifier = () => {
           _clipboard.top += 10;
           _clipboard.left += 10;
           setActiveObject(clonedObj);
-          canvas.requestRenderAll();
         });
       });
     } else {
@@ -312,6 +320,7 @@ export const useEditorStateModifier = () => {
   };
 
   const onObjectModified = (e) => {
+    // console.log("obj modifired called");
     // updateCanvasState();
   };
 

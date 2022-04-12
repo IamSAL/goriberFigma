@@ -9,6 +9,7 @@ export const defaultUiState = {
   footerVisibility: true,
   sideMenuVisibility: false,
   webAuthnSupport: false,
+  loading: false,
   contextMenu: {
     show: false,
     type: "editor",

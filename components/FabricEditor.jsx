@@ -54,12 +54,12 @@ const {setContextMenu}=useUiStateModifier()
         objectFound = true;
         console.log("context",obj)
         currentObj=obj
-        //TODO: whatever you want with the object
-      
-        
-        
+        canvas?.setActiveObject(obj);
+        //TODO: whatever you want with the object 
     }
     })
+
+ 
 
     if(objectFound && currentObj){
     
@@ -69,7 +69,15 @@ const {setContextMenu}=useUiStateModifier()
         },
       });
    
-    }else{
+    }else if(canvas.getActiveObject()?.containsPoint(clickPoint) ){
+      showLayerMenu(e, {
+        props: {
+          object: canvas.getActiveObject()
+        },
+      });
+      console.log("active group",canvas.getActiveObject())
+    }
+    else{
      
       showCanvasMenu(e, {
         props: {
@@ -90,6 +98,8 @@ const {setContextMenu}=useUiStateModifier()
       canvas.on("object:moving", onObjectMove);
       canvas.on("object:added", onObjectAdded);
       canvas.on("object:modified", onObjectModified);
+      canvas.on("object:skewing", onObjectModified);
+      canvas.on("object:scaling", onObjectModified);
       canvas.on("object:removed", onObjectRemoved);
       canvas.on("selection:created", onSelectedCreated);
       canvas.on("selection:updated", onSelectedCreated);
@@ -123,8 +133,8 @@ const {setContextMenu}=useUiStateModifier()
 
       document.addEventListener('keyup', ({  key,code, ctrlKey,shiftKey,altKey,metaKey } = event) => {
 
-        console.log({key,code, ctrlKey,shiftKey,altKey,metaKey})
-
+        // console.log({key,code, ctrlKey,shiftKey,altKey,metaKey})
+        const obj=canvas.getActiveObject();
  
          // Check pressed button is Z - Ctrl+Shift+Z.
          if (ctrlKey && shiftKey  && code === "KeyZ") {
@@ -149,6 +159,26 @@ const {setContextMenu}=useUiStateModifier()
             redo()
             return;
         }
+
+         // Copy - Ctrl+C.
+         if (ctrlKey && code === "KeyC") {
+           
+          if(obj){
+            canvas.copyToClipboard(obj)
+          }
+          
+          return;
+      }
+
+         // paste - Ctrl+C.
+         if (ctrlKey && code === "KeyV") {
+           
+          if(canvas.clipboard){
+            canvas.pasteClipboard()
+          }
+          
+          return;
+      }
 
     });
 

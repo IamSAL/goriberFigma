@@ -7,7 +7,10 @@ import {
   theme,
 } from "react-contexify";
 import { useEffect } from "react";
-import { useEditorStateModifier } from "./../common/contexts/EditorProvider";
+import {
+  useEditorState,
+  useEditorStateModifier,
+} from "./../common/contexts/EditorProvider";
 
 function LayerItemMenu(props) {
   // 🔥 you can use this hook from everywhere. All you need is the menu id
@@ -15,19 +18,24 @@ function LayerItemMenu(props) {
     id: "layer-item-menu",
   });
 
+  const [EditorState, setEditorState] = useEditorState();
+  const { canvas, editor } = EditorState;
+
   const {
     setActiveObject,
     setSelectedObjects,
     removeObject,
     renameObject,
     isSelected,
+    updateCanvasState,
   } = useEditorStateModifier();
 
   function handleItemClick({ event, props, triggerEvent, data }) {
     const { object } = props;
-    console.log(props);
     switch (event.currentTarget.id) {
       case "copy":
+        canvas?.copyToClipboard(object || "");
+        updateCanvasState();
         break;
       case "copy_as_svg":
         break;

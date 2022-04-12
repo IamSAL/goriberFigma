@@ -12,6 +12,7 @@ import { randomColor } from "../../common/helpers";
 import IconButton from "@mui/material/IconButton";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import ShuffleIcon from "@mui/icons-material/Shuffle";
+import { useDebounce } from "react-use";
 
 function valuetext(value) {
   return `${value}%`;
@@ -60,11 +61,14 @@ export default function Fill({ EditorState }) {
     return () => {};
   }, [activeObject]);
 
-  useEffect(() => {
-    activeObject?.set({ fill: value });
-    canvas?.renderAll();
-    return () => {};
-  }, [value, canvas, activeObject]);
+  useDebounce(
+    () => {
+      activeObject?.set({ fill: value });
+      canvas?.requestRenderAll();
+    },
+    200,
+    [value, canvas, activeObject]
+  );
 
   const onChange = (e) => {
     if (e.rgb) {

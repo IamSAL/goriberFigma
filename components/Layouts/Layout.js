@@ -6,6 +6,7 @@ import {
 
 import { useWindowSize } from "react-use";
 import AppHeader from "../AppHeader";
+import HorizontalLoader from "../HorizontalLoader";
 
 function Layout(props) {
   const [UiState, setUiState] = useUiState();
@@ -14,7 +15,9 @@ function Layout(props) {
 
   return (
     <>
+      <HorizontalLoader />
       <AppHeader />
+
       {props.children}
     </>
   );

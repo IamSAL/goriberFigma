@@ -3,6 +3,7 @@ import { fabric } from "fabric";
 import { useEditorStateModifier } from "../common/contexts/EditorProvider";
 import { setupPanModeModule } from "./../common/fabricModules/panning";
 import { setupHistoryModule } from "./../common/fabricModules/history";
+import { setupClipboardModule } from "./../common/fabricModules/clipboard";
 
 export function CanvasFabric({ onContextMenu }) {
   const canvasRef = useRef(null);
@@ -12,7 +13,7 @@ export function CanvasFabric({ onContextMenu }) {
   useEffect(() => {
     setupPanModeModule(fabric);
     setupHistoryModule(fabric);
-
+    setupClipboardModule(fabric);
     /**
      * Override the initialize function to include modules
      */
@@ -20,6 +21,7 @@ export function CanvasFabric({ onContextMenu }) {
       return function (...args) {
         originalFn.call(this, ...args);
         this._historyInit();
+        this._clipboardInit();
         return this;
       };
     })(fabric.Canvas.prototype.initialize);
@@ -31,6 +33,7 @@ export function CanvasFabric({ onContextMenu }) {
       return function (...args) {
         originalFn.call(this, ...args);
         this._historyDispose();
+        this._clipboardDispose();
         return this;
       };
     })(fabric.Canvas.prototype.dispose);
@@ -39,6 +42,7 @@ export function CanvasFabric({ onContextMenu }) {
       width: document.querySelector("#canvas_wrapper")?.offsetWidth || 500,
       height: document.querySelector("#canvas_wrapper")?.offsetHeight || 500,
       backgroundColor: "rgba(232, 232, 232,1)",
+      renderOnAddRemove: true,
     });
 
     setCanvas(canvas);

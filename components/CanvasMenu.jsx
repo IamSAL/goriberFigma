@@ -7,13 +7,20 @@ import {
   theme,
 } from "react-contexify";
 import { useEffect } from "react";
-import { useEditorStateModifier } from "../common/contexts/EditorProvider";
+import { fabric } from "fabric";
+import {
+  useEditorState,
+  useEditorStateModifier,
+} from "../common/contexts/EditorProvider";
 
 function CanvasMenu(props) {
   // 🔥 you can use this hook from everywhere. All you need is the menu id
   const { show } = useContextMenu({
     id: "canvas-menu",
   });
+
+  const [EditorState, setEditorState] = useEditorState();
+  const { canvas, editor } = EditorState;
 
   const {
     setActiveObject,
@@ -25,8 +32,18 @@ function CanvasMenu(props) {
 
   function handleItemClick({ event, props, triggerEvent, data }) {
     const { object } = props;
+    let clickPoint = new fabric.Point(
+      triggerEvent.offsetX,
+      triggerEvent.offsetY
+    );
+    console.log({ triggerEvent });
     switch (event.currentTarget.id) {
-      case "copy":
+      case "paste":
+        canvas?.pasteClipboard("object", {
+          top: clickPoint.y,
+          left: clickPoint.x,
+        });
+
         break;
       case "copy_as_svg":
         break;
@@ -41,7 +58,11 @@ function CanvasMenu(props) {
   return (
     <>
       <Menu id="canvas-menu" animation="fade" theme={theme.dark}>
-        <Item onClick={handleItemClick} id="paste">
+        <Item
+          onClick={handleItemClick}
+          id="paste"
+          disabled={canvas?.clipboard ? false : true}
+        >
           Paste here
         </Item>
         <Item disabled>Show/Hide UI</Item>
