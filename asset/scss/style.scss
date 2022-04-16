@@ -107,7 +107,9 @@ img#load {position: absolute;width: 55px;padding: 12px 9px;left: 50%;transform: 
 }
 
 
-.mobile_top_toolbar,.mobile_bottom_toolbar {position: absolute;padding: 5px 20px;z-index: 5;margin-left: 50%;transform: translateX(-50%);border-radius: 10px;width: 90%;
+.mobile_top_toolbar,.mobile_bottom_toolbar {position: absolute;padding: 5px 20px;z-index: 5;
+  margin-left: 50% !important;
+  transform: translateX(-50%);border-radius: 10px;width: 90%;
 display:flex;
 justify-content: center;
 }
