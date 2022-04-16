@@ -17,6 +17,7 @@ export default function HorizontalLoader() {
       }}
     >
       <LinearProgress />
+      <img id="load" src="/images/spinner.gif" />
     </Box>
   );
 }

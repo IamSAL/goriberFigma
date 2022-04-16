@@ -167,6 +167,42 @@ export const useEditorStateModifier = () => {
     setActiveObject(object);
   };
 
+  const lockObject = (object) => {
+    object?.set({
+      lockSkewingY: true,
+      lockSkewingX: true,
+      lockMovementY: true,
+      lockMovementX: true,
+      hasControls: false,
+      selectable: false,
+    });
+  };
+
+  const unlockObject = (object) => {
+    object?.set({
+      lockSkewingY: false,
+      lockSkewingX: false,
+      lockMovementY: false,
+      lockMovementX: false,
+      hasControls: true,
+      selectable: true,
+    });
+  };
+
+  const hideObject = (object) => {
+    object?.set({
+      visible: false,
+    });
+    canvas?.requestRenderAll();
+  };
+
+  const showObject = (object) => {
+    object?.set({
+      visible: true,
+    });
+    canvas?.requestRenderAll();
+  };
+
   const clearActiveObject = () => {
     setEditorState((prev) => {
       return {
@@ -185,6 +221,7 @@ export const useEditorStateModifier = () => {
         editor: { ...editor, allObjects: allNewObjects || [] },
       };
     });
+    canvas?.requestRenderAll();
   };
 
   const undo = function () {
@@ -247,7 +284,6 @@ export const useEditorStateModifier = () => {
         // remove objects
         if (activeObjects.length > 0) {
           canvas.offHistory();
-
           for (var i = 0; i < activeObjects.length; i++) {
             if (!activeObjects[i].isEditing) {
               canvas.remove(activeObjects[i]);
@@ -302,7 +338,7 @@ export const useEditorStateModifier = () => {
     target.set({
       scaleY: target.scaleY || 1,
       scaleX: target.scaleX || 1,
-      name: target.name || editor.drawingMode.tool || "untitled",
+      name: target.name || editor.drawingMode.tool || target.type,
       obId: nanoid(10),
     });
     updateCanvasState();
@@ -360,6 +396,10 @@ export const useEditorStateModifier = () => {
     getActiveObject,
     removeObject,
     renameObject,
+    unlockObject,
+    hideObject,
+    showObject,
+    lockObject,
     clearActiveObject,
     setSelectedObjects,
     setDrawingMode,

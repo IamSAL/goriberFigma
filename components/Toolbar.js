@@ -10,10 +10,11 @@ import Scale from "./Controls/Scale";
 import ActiveObject from "./Controls/ActiveObject";
 import { useEditorData } from "../common/contexts/EditorProvider";
 import Layers from "./Controls/Layers";
-
+import Controls from "./Controls";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import HistoryPanel from "./Controls/HistoryPanel";
+import Export from "./Controls/Export";
 
 function a11yProps(index) {
   return {
@@ -25,7 +26,7 @@ function a11yProps(index) {
 const Toolbar = () => {
   const EditorState = useEditorData();
 
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = React.useState(1);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -40,19 +41,28 @@ const Toolbar = () => {
         variant="scrollable"
         scrollButtons="auto"
       >
-        <Tab label="Layers" {...a11yProps(0)} />
-
-        <Tab label="History" {...a11yProps(1)} />
-        <Tab label="Assets" {...a11yProps(2)} />
-        <Tab label="Settings" {...a11yProps(3)} disabled />
-        <Tab label="Export" {...a11yProps(4)} disabled />
+        <Tab label="Controls" {...a11yProps(0)} />
+        <Tab label="Layers" {...a11yProps(1)} />
+        <Tab label="History" {...a11yProps(2)} />
+        <Tab label="Assets" {...a11yProps(3)} />
+        <Tab label="Export" {...a11yProps(4)} />
       </Tabs>
       <div className="tool-bar-content">
-        {value == 0 && <Layers EditorState={EditorState} />}
-        {value == 1 && <HistoryPanel EditorState={EditorState} />}
+        {value == 0 && (
+          <div className="p-4">
+            <Controls />{" "}
+          </div>
+        )}
+        {value == 1 && <Layers EditorState={EditorState} />}
+        {value == 2 && <HistoryPanel EditorState={EditorState} />}
         {value == 3 && (
           <div className="p-4">
             <ShapePicker />
+          </div>
+        )}
+        {value == 4 && (
+          <div className="p-4">
+            <Export EditorState={EditorState} />
           </div>
         )}
       </div>
