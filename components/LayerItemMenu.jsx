@@ -37,6 +37,18 @@ function LayerItemMenu(props) {
         canvas?.copyToClipboard(object || "");
         updateCanvasState();
         break;
+      case "bring_forward":
+        object?.bringForward();
+        break;
+      case "send_backward":
+        object?.sendBackwards();
+        break;
+      case "bring_to_front":
+        object?.bringToFront();
+        break;
+      case "send_to_back":
+        object?.sendToBack();
+        break;
       case "copy_as_svg":
         break;
       case "copy_as_json":
@@ -45,6 +57,7 @@ function LayerItemMenu(props) {
         removeObject(object);
         break;
     }
+    updateCanvasState();
   }
 
   return (
@@ -61,8 +74,18 @@ function LayerItemMenu(props) {
         <Item disabled>Lock/Unlock</Item>
         <Item disabled>Show/Hide</Item>
         <Separator />
-        <Item onClick={handleItemClick}>Bring to front</Item>
-        <Item onClick={handleItemClick}>Send to back</Item>
+        <Item onClick={handleItemClick} id="bring_to_front">
+          Bring to front
+        </Item>
+        <Item onClick={handleItemClick} id="bring_forward">
+          Bring forward
+        </Item>
+        <Item onClick={handleItemClick} id="send_backward">
+          Send backward
+        </Item>
+        <Item onClick={handleItemClick} id="send_to_back">
+          Send to back
+        </Item>
         <Item onClick={handleItemClick} id="delete">
           Delete
         </Item>

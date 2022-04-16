@@ -142,7 +142,7 @@ const {setContextMenu}=useUiStateModifier()
           return;
       }
 
-        if (code === "Backspace"||code === "Delete") {
+        if (code === "Delete") {
           deleteImage();
           return;
         }

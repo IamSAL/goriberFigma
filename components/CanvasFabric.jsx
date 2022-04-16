@@ -43,6 +43,7 @@ export function CanvasFabric({ onContextMenu }) {
       height: document.querySelector("#canvas_wrapper")?.offsetHeight || 500,
       backgroundColor: "rgba(232, 232, 232,1)",
       renderOnAddRemove: true,
+      preserveObjectStacking: true,
     });
 
     setCanvas(canvas);

@@ -11,6 +11,8 @@ import {
 import LayerItem from "./LayerItem.jsx";
 import { useEditorStateModifier } from "../../common/contexts/EditorProvider";
 import LayerItemMenu from "../LayerItemMenu.jsx";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import {reorderLayers } from "../../common/helpers.js";
 
 export default function Layers({ EditorState }) {
   const {
@@ -19,86 +21,88 @@ export default function Layers({ EditorState }) {
   } = EditorState;
 
   const {
-    setActiveObject,
     setSelectedObjects,
     removeObject,
     renameObject,
     isSelected,
+    updateCanvasState,
   } = useEditorStateModifier();
   const [dense, setDense] = React.useState(true);
-  const [secondary, setSecondary] = React.useState(false);
-  const [open, setOpen] = React.useState(true);
-  const [editing, setediting] = React.useState(false);
-
-  const handleClick = () => {
-    setOpen(!open);
-  };
 
   const handleListItemClick = (event, index, object) => {
     setSelectedObjects([object]);
     // canvas?.setActiveObject(object);
   };
 
+  const onDragEnd = (result) => {
+    if (!result.destination) {
+      return;
+    }
+
+    if (canvas) {
+      const items = reorderLayers(
+        canvas.getObjects().reverse(),
+        result.source.index,
+        result.destination.index
+      );
+
+      canvas._objects = items.reverse();
+      updateCanvasState();
+    }
+  };
+
   return (
     <Box sx={{ width: "100%" }}>
-      <List
-        dense={dense}
-        sx={{
-          "& .Mui-selected": {
-            backgroundColor: "rgb(217, 217, 217) !important",
-          },
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId="droppable">
+          {(provided, snapshot) => (
+            <List
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              dense={dense}
+              sx={{
+                "& .Mui-selected": {
+                  backgroundColor: "rgb(217, 217, 217) !important",
+                },
 
-          overflowY: "scroll",
-          maxHeight: "80vh",
-          minHeight: "80vh",
-          width: "100%",
-        }}
-      >
-        {canvas?.getObjects()?.map((object, idx) => {
-          return (
-            <LayerItem
-              object={object}
-              key={idx}
-              removeObject={removeObject}
-              renameObject={renameObject}
-              handleListItemClick={handleListItemClick}
-              isSelected={isSelected}
-              drawingMode={drawingMode}
-            />
-          );
-        })}
-
-        {/* <ListItemButton onClick={handleClick}>
-          <ListItemIcon>
-            <FolderIcon />
-          </ListItemIcon>
-          <ListItemText primary="Group" />
-          {open ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-
-        <Collapse in={open} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItem
-              selected={selectedIndex === 2}
-              onClick={(event) => handleListItemClick(event, 2)}
-              secondaryAction={
-                <IconButton edge="end" aria-label="delete">
-                  <DeleteIcon />
-                </IconButton>
-              }
-              sx={{ pl: 4 }}
+                overflowY: "scroll",
+                maxHeight: "80vh",
+                minHeight: "80vh",
+                width: "100%",
+              }}
             >
-              <ListItemIcon>
-                <InsertDriveFileIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="Single-line item"
-                secondary={secondary ? "Secondary text" : null}
-              />
-            </ListItem>
-          </List>
-        </Collapse> */}
-      </List>
+              {canvas
+                ?.getObjects()
+                ?.reverse()
+                ?.map((object, idx) => (
+                  <Draggable
+                    key={object.obId || idx}
+                    draggableId={object.obId || idx}
+                    index={idx}
+                  >
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                      >
+                        <LayerItem
+                          object={object}
+                          removeObject={removeObject}
+                          renameObject={renameObject}
+                          handleListItemClick={handleListItemClick}
+                          isSelected={isSelected}
+                          drawingMode={drawingMode}
+                        />
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+              {provided.placeholder}
+            </List>
+          )}
+        </Droppable>
+      </DragDropContext>
     </Box>
   );
 }

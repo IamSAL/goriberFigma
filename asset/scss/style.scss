@@ -95,3 +95,25 @@ button[disabled] {
   width: 250px !important;
   height: fit-content !important;
 }
+
+img#load {position: absolute;width: 55px;padding: 12px 9px;left: 50%;transform: translateX(-50%);}
+.layer_item{
+  &:hover .action-icons{
+    display: block !important;
+  }
+  .action-icons{
+    display: none;
+  }
+}
+
+
+.mobile_top_toolbar,.mobile_bottom_toolbar {position: absolute;padding: 5px 20px;z-index: 5;margin-left: 50%;transform: translateX(-50%);border-radius: 10px;width: 90%;
+display:flex;
+justify-content: center;
+}
+.mobile_top_toolbar {
+  top: 75px;
+  background-color: #bebebe00;
+  filter: invert(1);
+}
+.mobile_bottom_toolbar {background-color: #2b2b2b;bottom: 70px;}

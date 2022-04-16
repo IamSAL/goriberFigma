@@ -1,6 +1,8 @@
 import * as React from "react";
-import Editor from "../components/Editor";
-
+import dynamic from "next/dynamic";
+const Editor = dynamic(() => import("../components/Editor"), {
+  ssr: false,
+});
 const index = () => {
   return (
     <div className="app-container">
