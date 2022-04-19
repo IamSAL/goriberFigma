@@ -4,6 +4,7 @@ import { useEditorStateModifier } from "../common/contexts/EditorProvider";
 import { setupPanModeModule } from "./../common/fabricModules/panning";
 import { setupHistoryModule } from "./../common/fabricModules/history";
 import { setupClipboardModule } from "./../common/fabricModules/clipboard";
+import setupCustomBrushes from "../common/fabricModules/brushes/setupCustomBrushes";
 
 export function CanvasFabric({ onContextMenu }) {
   const canvasRef = useRef(null);
@@ -11,9 +12,11 @@ export function CanvasFabric({ onContextMenu }) {
     useEditorStateModifier();
 
   useEffect(() => {
+
     setupPanModeModule(fabric);
     setupHistoryModule(fabric);
     setupClipboardModule(fabric);
+    setupCustomBrushes(fabric);
     /**
      * Override the initialize function to include modules
      */

@@ -17,7 +17,7 @@ const Controls = () => {
   const EditorState = useEditorData();
 
   return (
-    <div className="controls">
+  <>
       <Accordion defaultExpanded={false}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
@@ -67,7 +67,7 @@ const Controls = () => {
           <Export EditorState={EditorState} />
         </AccordionDetails>
       </Accordion>
-    </div>
+    </>
   );
 };
 

@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { createContext, useState, useEffect, useContext } from "react";
 import { checkPlatformWebAuthnSupport } from "../helpers";
-
+import { useWindowSize } from "react-use";
 export const UiContext = createContext();
 export const defaultUiState = {
   setting: {},
@@ -10,6 +10,7 @@ export const defaultUiState = {
   sideMenuVisibility: false,
   webAuthnSupport: false,
   loading: false,
+  isMobile:false,
   contextMenu: {
     show: false,
     type: "editor",
@@ -19,7 +20,7 @@ export const defaultUiState = {
 
 export const UiContextProvider = ({ children }) => {
   const [UiState, setUiState] = useState(defaultUiState);
-
+  const { width, height } = useWindowSize();
   const router = useRouter();
   const onRouteChangeDone = (url, { shallow }) => {
     setUiState((prev) => {
@@ -45,18 +46,22 @@ export const UiContextProvider = ({ children }) => {
   }, [router]);
 
   useEffect(() => {
-    checkPlatformWebAuthnSupport().then((available) => {
-      if (available) {
-        setUiState((prev) => {
-          return { ...prev, webAuthnSupport: true };
-        });
-      }
-    });
+
     if (localStorage.getItem(`UiData`)) {
       setUiState(JSON.parse(localStorage.getItem(`UiData`)));
     }
     return () => {};
   }, []);
+
+  useEffect(() => {
+
+      setUiState((prev) => {
+        return { ...prev, isMobile: width<=950 };
+      });
+ 
+   
+    return () => {};
+  }, [width]);
 
   return (
     <UiContext.Provider value={[UiState, setUiState]}>

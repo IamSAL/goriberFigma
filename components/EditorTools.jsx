@@ -118,6 +118,7 @@ export default function EditorTools() {
           <ToggleButton value="pencil" aria-label="left aligned">
             <CreateOutlinedIcon />
           </ToggleButton>
+
           <ToggleButton value="brush" aria-label="centered">
             <BrushOutlinedIcon />
           </ToggleButton>

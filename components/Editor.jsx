@@ -11,6 +11,7 @@ import ContextMenus from "./ContextMenus";
 import { useWindowSize } from "react-use";
 import EditorTools from "./EditorTools";
 import OptionTools from "./OptionTools";
+import ToolControls from "./ToolControls";
 
 const Editor = () => {
   const { width, height } = useWindowSize();
@@ -63,7 +64,12 @@ const Editor = () => {
                 },
               }}
             >
+                <div className="controls">
+                <ToolControls/>
               <Controls />
+
+                </div>
+            
             </Paper>
           </Grid>
         </Grid>

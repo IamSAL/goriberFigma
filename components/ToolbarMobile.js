@@ -23,11 +23,9 @@ function a11yProps(index) {
   };
 }
 
-const Toolbar = () => {
+const ToolbarMobile = () => {
   const EditorState = useEditorData();
-
   const [value, setValue] = React.useState(0);
-
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -41,23 +39,27 @@ const Toolbar = () => {
         variant="scrollable"
         scrollButtons="auto"
       >
-    
-        <Tab label="Layers" {...a11yProps(0)} />
-        <Tab label="History" {...a11yProps(1)} />
-        <Tab label="Assets" {...a11yProps(2)} />
-        <Tab label="Export" {...a11yProps(3)} />
+        <Tab label="Controls" {...a11yProps(0)} />
+        <Tab label="Layers" {...a11yProps(1)} />
+        <Tab label="History" {...a11yProps(2)} />
+        <Tab label="Assets" {...a11yProps(3)} />
+        <Tab label="Export" {...a11yProps(4)} />
       </Tabs>
       <div className="tool-bar-content">
-       
-        {value == 0 && <Layers EditorState={EditorState} />}
-        {value == 1 && <HistoryPanel EditorState={EditorState} />}
-        {value == 2 && (
+        {value == 0 && (
           <div className="py-4">
+            <Controls />
+          </div>
+        )}
+        {value == 1 && <Layers EditorState={EditorState} />}
+        {value == 2 && <HistoryPanel EditorState={EditorState} />}
+        {value == 3 && (
+          <div className="p-4">
             <ShapePicker />
           </div>
         )}
-        {value == 3 && (
-          <div className="py-4">
+        {value == 4 && (
+          <div className="p-4">
             <Export EditorState={EditorState} />
           </div>
         )}
@@ -66,4 +68,4 @@ const Toolbar = () => {
   );
 };
 
-export default Toolbar;
+export default ToolbarMobile;

@@ -12,6 +12,7 @@ import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import Toolbar from "./Toolbar";
 import EditorTools from "./EditorTools";
 import OptionTools from "./OptionTools";
+import ToolbarMobile from "./ToolbarMobile";
 const drawerBleeding = 56;
 
 const Root = styled("div")(({ theme }) => ({
@@ -90,7 +91,7 @@ function MobileToolBar(props) {
             overflow: "auto",
           }}
         >
-          <Toolbar />
+       <ToolbarMobile/>
         </StyledBox>
       </SwipeableDrawer>
     </Root>
