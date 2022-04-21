@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect} from "react";
 
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -15,10 +15,12 @@ import Export from "./Controls/Export";
 
 const ToolControls = () => {
   const EditorState = useEditorData();
+ 
 
+  
   return (
     <>
-      <Accordion defaultExpanded={false}>
+      <Accordion defaultExpanded={true}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel3a-content"

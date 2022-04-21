@@ -4,6 +4,7 @@ import InkBrush from "./InkBrush";
 import MarkerBrush from "./MarkerBrush";
 import SprayBrush from "./SprayBrush";
 import Stroke from "./Stroke";
+import Pencil from "./Pencil";
 export const setupCustomBrushes = (fabric, options) => {
 fabric.Point.prototype.angleBetween = function(that){
     return Math.atan2( this.x - that.x, this.y - that.y);
@@ -39,7 +40,7 @@ fabric.CrayonBrush=CrayonBrush
 fabric.InkBrush=InkBrush
 fabric.MarkerBrush=MarkerBrush
 fabric.SprayBrush=SprayBrush
-
+fabric.Pencil=Pencil
 
 };
 

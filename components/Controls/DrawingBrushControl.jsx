@@ -5,11 +5,11 @@ import DatGui, { DatBoolean, DatColor, DatNumber, DatString,DatSelect } from 're
 
 
 let initialBrushOptions={
-        brushType : "InkBrush",
-        brushWidth : 30,
+        brushType : "Pencil",
+        brushWidth : 1,
         brushOpacity : 1,
         inkAmount : 7,
-        brushColor : "#ff0000"
+        brushColor : "#000000"
 }
 
 export default function DrawingBrushControl({ EditorState }) {
@@ -46,10 +46,10 @@ useEffect(() => {
       {drawingMode.tool=="brush" ? (
         <>
         <DatGui data={brushOptions} onUpdate={handleBrushOptionUpdate}>
-        <DatSelect path='brushType' label="Brush" options={['CrayonBrush','InkBrush','MarkerBrush','SprayBrush']} />
-        <DatNumber path='brushWidth' label='Hardness' min={10} max={100} step={1} />
+        <DatSelect path='brushType' label="Brush" options={['Pencil','CrayonBrush','InkBrush','MarkerBrush','SprayBrush']} />
+        <DatNumber path='brushWidth' label='Width' min={1} max={100} step={1} />
         <DatColor path='brushColor' label='Color' />
-        <DatNumber path='brushOpacity' label='Brush width' min={0.05} max={1} step={0.05} />
+        <DatNumber path='brushOpacity' label='Opacity' min={0.05} max={1} step={0.05} />
         <DatNumber path='inkAmount' label='Ink amount' min={1} max={10} step={1} />
         {/* <DatBoolean path='isAwesome' label='Awesome?' /> */}
  

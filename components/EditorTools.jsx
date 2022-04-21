@@ -43,7 +43,7 @@ export default function EditorTools() {
   const { canvas, editor } = EditorState;
 
   useEffect(() => {
-    if (["pencil", "brush"].includes(elementTool)) {
+    if (["brush"].includes(elementTool)) {
       setDrawingMode({ status: true, tool: elementTool });
     } else if (["rect", "circle", "text"].includes(elementTool)) {
       switch (elementTool) {
@@ -115,9 +115,7 @@ export default function EditorTools() {
           <ToggleButton value="move" aria-label="left aligned">
             <PanToolOutlinedIcon />
           </ToggleButton>
-          <ToggleButton value="pencil" aria-label="left aligned">
-            <CreateOutlinedIcon />
-          </ToggleButton>
+      
 
           <ToggleButton value="brush" aria-label="centered">
             <BrushOutlinedIcon />

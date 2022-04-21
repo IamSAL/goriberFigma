@@ -1,4 +1,5 @@
 import { fabric } from "fabric";
+import { nanoid } from "nanoid";
 export default fabric.util.createClass(fabric.BaseBrush, {
     
     color: "#000000",
@@ -65,6 +66,38 @@ export default fabric.util.createClass(fabric.BaseBrush, {
     },
 
     onMouseUp: function() {
+      
       this.canvas.contextTop.globalAlpha = this.opacity;
+      //this._finalizeAndAddPath();
+    },
+
+    _finalizeAndAddPath: function() {
+      var ctx = this.canvas.contextTop;
+      ctx.closePath();
+      if (this.decimate) {
+        this._points = this.decimatePoints(this._points, this.decimate);
+      }
+      var pathData = this.convertPointsToSVGPath(this._points);
+      if (this._isEmptySVGPath(pathData)) {
+        // do not create 0 width/height paths, as they are
+        // rendered inconsistently across browsers
+        // Firefox 4, for example, renders a dot,
+        // whereas Chrome 10 renders nothing
+        this.canvas.requestRenderAll();
+        return;
+      }
+      var path = this.createPath(pathData);
+      path.set({
+        name: "pencil",
+        obId: nanoid(10),
+      })
+      this.canvas.clearContext(this.canvas.contextTop);
+      this.canvas.fire('before:path:created', { path: path });
+      this.canvas.add(path);
+      this.canvas.requestRenderAll();
+      path.setCoords();
+      this._resetShadow();
+      // fire event 'path' created
+      this.canvas.fire('path:created', { path: path });
     }
   });

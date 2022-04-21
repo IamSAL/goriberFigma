@@ -130,7 +130,10 @@ export const useEditorStateModifier = () => {
         canvas.isDrawingMode = drawingOptions.status;
         if (drawingOptions.tool == "move") {
           canvas.selection = true;
-        } else {
+        } else if(drawingOptions.tool=="pencil"){
+          canvas.freeDrawingBrush = new fabric.PencilBrush(canvas,"PencilBrush", {});
+        }
+        else {
           canvas.selection = false;
         }
         return {
@@ -339,7 +342,7 @@ export const useEditorStateModifier = () => {
       scaleY: target.scaleY || 1,
       scaleX: target.scaleX || 1,
       name: target.name || editor.drawingMode.tool || target.type,
-      obId: nanoid(10),
+      obId: target.obId || nanoid(10),
     });
     updateCanvasState();
   };

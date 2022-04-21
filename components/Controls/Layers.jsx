@@ -77,7 +77,7 @@ export default function Layers({ EditorState }) {
                 ?.map((object, idx) => (
                   <Draggable
                     key={object.obId || idx}
-                    draggableId={object.obId || idx}
+                    draggableId={object.obId || idx||"dsd"}
                     index={idx}
                   >
                     {(provided, snapshot) => (

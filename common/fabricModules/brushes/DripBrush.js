@@ -1,4 +1,5 @@
 import { fabric } from "fabric";
+
 export default fabric.util.createClass(fabric.Object, {
     rate: 0,
     color: "#000000",
