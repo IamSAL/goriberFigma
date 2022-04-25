@@ -12,11 +12,13 @@ import { useWindowSize } from "react-use";
 import EditorTools from "./EditorTools";
 import OptionTools from "./OptionTools";
 import ToolControls from "./ToolControls";
+import FloatingControls from "./FloatingControls";
 
 const Editor = () => {
   const { width, height } = useWindowSize();
   return (
     <>
+    <FloatingControls/>
       {width > 950 ? (
         <Grid container spacing={0}>
           <Grid item xs={2}>

@@ -16,7 +16,6 @@ function Layout(props) {
     <>
       <HorizontalLoader />
       <AppHeader />
-
       {props.children}
     </>
   );

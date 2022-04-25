@@ -30,8 +30,11 @@ const theme = createTheme({
   },
 });
 
+import {Provider} from "react-redux";
+import store from "../store";
 function MyApp({ Component, pageProps }) {
   return (
+  <Provider store={store}>
     <ThemeProvider theme={theme}>
       <UiContextProvider>
         <EditorProvider>
@@ -41,6 +44,7 @@ function MyApp({ Component, pageProps }) {
         </EditorProvider>
       </UiContextProvider>
     </ThemeProvider>
+    </Provider>
   );
 }
 

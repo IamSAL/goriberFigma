@@ -89,3 +89,17 @@ justify-content: center;
   filter: invert(1);
 }
 .mobile_bottom_toolbar {background-color: #2b2b2b;bottom: 70px;}
+
+.floating_controls {
+  position: absolute;bottom: 3vh;display: flex;justify-content: center;width: 100%;z-index: 5; button {margin: 8px;}
+  .floating_controls_tools{
+    transition: 0.2s;
+    visibility: hidden;
+  }
+  &:hover{
+    .floating_controls_tools{
+      visibility: visible;
+    }
+  }
+}
+

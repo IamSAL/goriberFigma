@@ -15,6 +15,8 @@ import EditorTools from "./EditorTools.jsx";
 import OptionTools from "./OptionTools";
 import { useWindowSize } from "react-use";
 import MobileHeader from "./MobileHeader.jsx";
+import { useDispatch } from 'react-redux';
+import { UiControllerActionType } from './../store/slices/UiControllerSlice';
 const pages = ["Account", "Dashboard", "Logout"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
@@ -22,7 +24,7 @@ const AppHeader = () => {
   const { width, height } = useWindowSize();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-
+  const dispatch= useDispatch();
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -85,6 +87,13 @@ const AppHeader = () => {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
+                 <MenuItem onClick={()=>{
+                    dispatch(UiControllerActionType.show())
+                    setAnchorElUser(null);
+                      
+                 }}>
+                    <Typography textAlign="center">Settings</Typography>
+                  </MenuItem>
                 {settings.map((setting) => (
                   <MenuItem key={setting} onClick={handleCloseUserMenu}>
                     <Typography textAlign="center">{setting}</Typography>
