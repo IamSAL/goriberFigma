@@ -24,7 +24,7 @@ const Transition = React.forwardRef(function Transition(
 export default function FullScreenDialog() {
 
   const dispatch=useDispatch();
-  const open=useSelector(state=>state.UiController.showFullScreenModal)
+  const open=useSelector(state=>state.UiController.FullScreenModal.show)
 
   const handleClose = () => {
     dispatch(UiControllerActionType.hide())

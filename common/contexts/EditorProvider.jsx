@@ -9,7 +9,9 @@ import { useAuth } from "./AuthProvider";
 import { fabric } from "fabric";
 import { getRandBetween, randomColor } from "./../helpers";
 import { nanoid } from "nanoid";
-import { useUiState } from "./UiContextProvider";
+import { useDispatch } from 'react-redux';
+import { UiControllerActionType } from "../../store/slices/UiControllerSlice";
+
 
 export const EditorContext = createContext();
 export const defaultEditorState = {
@@ -44,7 +46,7 @@ export const EditorProvider = ({ children }) => {
     if (localStorage.getItem(`editorData`)) {
       setEditorState(JSON.parse(localStorage.getItem(`editorData`)));
     }
-    return () => {};
+    return () => { };
   }, []);
 
   return (
@@ -72,9 +74,9 @@ export const useEditor = () => {
 
 export const useEditorStateModifier = () => {
   const [EditorState, setEditorState] = useContext(EditorContext);
-  const [UiState, setUiState] = useUiState();
-  const { editor, canvas } = EditorState;
 
+  const { editor, canvas } = EditorState;
+  const dispatch = useDispatch();
   const setFullScreenMenuOpen = (show) => {
     setEditorState((prev) => {
       return { ...prev, fullScreenMenuOpen: show };
@@ -130,8 +132,8 @@ export const useEditorStateModifier = () => {
         canvas.isDrawingMode = drawingOptions.status;
         if (drawingOptions.tool == "move") {
           canvas.selection = true;
-        } else if(drawingOptions.tool=="pencil"){
-          canvas.freeDrawingBrush = new fabric.PencilBrush(canvas,"PencilBrush", {});
+        } else if (drawingOptions.tool == "pencil") {
+          canvas.freeDrawingBrush = new fabric.PencilBrush(canvas, "PencilBrush", {});
         }
         else {
           canvas.selection = false;
@@ -278,10 +280,8 @@ export const useEditorStateModifier = () => {
 
   const deleteImage = function () {
     if (canvas) {
-      setUiState((prev) => {
-        return { ...prev, loading: true };
-      });
 
+      dispatch(UiControllerActionType.setLoading(true))
       setTimeout(() => {
         const activeObjects = canvas.getActiveObjects();
         // remove objects
@@ -296,9 +296,7 @@ export const useEditorStateModifier = () => {
           canvas.discardActiveObject().renderAll();
           clearActiveObject();
         }
-        setUiState((prev) => {
-          return { ...prev, loading: false };
-        });
+        dispatch(UiControllerActionType.setLoading(false))
       }, 100);
     }
   };
@@ -336,7 +334,7 @@ export const useEditorStateModifier = () => {
     }
   };
 
-  const onObjectMove = (e) => {};
+  const onObjectMove = (e) => { };
   const onObjectAdded = ({ target }) => {
     target.set({
       scaleY: target.scaleY || 1,

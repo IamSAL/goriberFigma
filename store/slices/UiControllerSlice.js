@@ -1,30 +1,38 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 
-export const UiControllerSlice=createSlice({
-    name:"UiController",
-    initialState:{
-        showFullScreenModal:false,
-        title:"Setting",
-        children:null,
+export const UiControllerSlice = createSlice({
+    name: "UiController",
+    initialState: {
+        setting: {},
+        loading: false,
+        FullScreenModal: {
+            show: false,
+            title: "Setting",
+            children: null,
+        }
     },
-    reducers:{
-        show:(state,action)=>{       
-            const {title,children}=action.payload||{}
-            state.showFullScreenModal=true
-            state.title=title||""
-            state.children=children||null
+    reducers: {
+        showFullScreenModal: (state, action) => {
+            const { title, children } = action.payload || {}
+            state.FullScreenModal.show = true
+            state.FullScreenModal.title = title || ""
+            state.FullScreenModal.children = children || null
             return state;
         },
-        hide:(state)=>{
-            state.showFullScreenModal=false
+        hideFullScreenModal: (state) => {
+            state.FullScreenModal.show = false
             return state;
         },
+        setLoading: (state, action) => {
+            state.loading = action.payload || false;
+            return state;
+        }
     }
 })
 
-const {show,hide}=UiControllerSlice.actions
+const { showFullScreenModal: show, hideFullScreenModal: hide, setLoading } = UiControllerSlice.actions
 
-export const UiControllerActionType={show,hide}
+export const UiControllerActionType = { show, hide, setLoading }
 
 export default UiControllerSlice.reducer;

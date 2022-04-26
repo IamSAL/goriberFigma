@@ -7,8 +7,6 @@ import {
 
 } from "./../common/contexts/EditorProvider";
 import { getSvgParts } from "./../common/getSvgParts";
-import { useUiStateModifier } from "../common/contexts/UiContextProvider";
-import ContextMenu from './ContextMenu';
 import {
   useContextMenu,
 } from "react-contexify";
@@ -19,7 +17,7 @@ const FabricEditor = () => {
   const [EditorState, setEditorState] = useEditorState();
   const [contextMenuStatus, setcontextMenuStatus] = useState(false);
   const { canvas,editor } = EditorState;
-const {setContextMenu}=useUiStateModifier()
+
   const {
     deleteImage,
     undo, redo,
@@ -87,8 +85,6 @@ const {setContextMenu}=useUiStateModifier()
     }
 
     
-
-  
    
   }
 
@@ -183,23 +179,6 @@ const {setContextMenu}=useUiStateModifier()
     });
 
 
-
-  //   document.querySelector('.upper-canvas').addEventListener('contextmenu', function (e) {
-  //     var objectFound = false;
-  //     var clickPoint = new fabric.Point(e.offsetX, e.offsetY);
-  //     setContextMenu(true,"editor",{x:e.clientX, y:e.clientY})
-  //     console.log("context clicked")
-  //     e.preventDefault();
-  //     canvas.forEachObject(function (obj) {
-  //         if (!objectFound && obj.containsPoint(clickPoint)) {
-  //             objectFound = true;
-  //             console.log("context",obj)
-  //             //TODO: whatever you want with the object
-  //         }
-  //     });
-  // });
-
-  
     document.querySelector('.upper-canvas').addEventListener('contextmenu', (e)=>{
       handleContextMenu(e,{})
     });
